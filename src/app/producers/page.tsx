@@ -1,10 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
+// Definisikan tipe data untuk Producer
+interface Producer {
+  id: number;
+  name: string;
+}
+
 export default function Producers() {
-  const [producers, setProducers] = useState([]);
+  const [producers, setProducers] = useState<Producer[]>([]);
   const [producerName, setProducerName] = useState("");
-  const [editProducer, setEditProducer] = useState(null);
+  const [editProducer, setEditProducer] = useState<number | null>(null);
   const [editProducerName, setEditProducerName] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +24,7 @@ export default function Producers() {
 
   useEffect(() => { fetchProducers(); }, []);
 
-  const handleAddProducer = async (e) => {
+  const handleAddProducer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!producerName) return;
     await fetch("/api/producer-cake", {
@@ -29,12 +35,12 @@ export default function Producers() {
     fetchProducers();
   };
 
-  const handleEditProducer = (producer) => {
+  const handleEditProducer = (producer: Producer) => {
     setEditProducer(producer.id);
     setEditProducerName(producer.name);
   };
 
-  const handleUpdateProducer = async (e) => {
+  const handleUpdateProducer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await fetch("/api/producer-cake", {
       method: "PUT",
@@ -45,7 +51,7 @@ export default function Producers() {
     fetchProducers();
   };
 
-  const handleDeleteProducer = async (id) => {
+  const handleDeleteProducer = async (id: number) => {
     if (!confirm("Yakin hapus produsen ini?")) return;
     await fetch("/api/producer-cake", {
       method: "DELETE",

@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 min-h-screen`}
       >
@@ -34,7 +34,9 @@ export default function RootLayout({
             <Link href="/dashboard" className="px-3 py-1 rounded hover:bg-green-800 transition">Dashboard</Link>
             <Link href="/producers" className="px-3 py-1 rounded hover:bg-green-800 transition">Produsen</Link>
             <Link href="/cakes" className="px-3 py-1 rounded hover:bg-green-800 transition">Kue</Link>
-            <Link href="/stock" className="px-3 py-1 rounded hover:bg-green-800 transition">Stok Harian</Link>
+            <Link href="/stock-in" className="px-3 py-1 rounded hover:bg-green-800 transition">Stok Pagi</Link>
+            <Link href="/stock-out" className="px-3 py-1 rounded hover:bg-green-800 transition">Stok Sore</Link>
+            <Link href="/stock" className="px-3 py-1 rounded hover:bg-green-800 transition">Rekap Stok</Link>
           </div>
         </nav>
         <main className="p-2 sm:p-4 md:p-8 max-w-5xl mx-auto w-full">{children}</main>

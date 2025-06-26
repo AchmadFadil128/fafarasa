@@ -1,11 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 
+// Definisikan tipe data untuk menghindari error 'any'
+interface Producer {
+  id: number;
+  name: string;
+}
+
+interface Cake {
+  id: number;
+  name: string;
+  purchasePrice: number;
+  sellingPrice: number;
+  producerId: number;
+  producer?: Producer;
+}
+
 export default function Cakes() {
-  const [cakes, setCakes] = useState([]);
-  const [producers, setProducers] = useState([]);
+  const [cakes, setCakes] = useState<Cake[]>([]);
+  const [producers, setProducers] = useState<Producer[]>([]);
   const [cakeForm, setCakeForm] = useState({
-    id: null,
+    id: null as number | null,
     name: "",
     purchasePrice: "",
     sellingPrice: "",
@@ -24,11 +39,11 @@ export default function Cakes() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const handleCakeFormChange = (e) => {
+  const handleCakeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setCakeForm({ ...cakeForm, [e.target.name]: e.target.value });
   };
 
-  const handleAddOrUpdateCake = async (e) => {
+  const handleAddOrUpdateCake = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const method = cakeForm.id ? "PUT" : "POST";
     const payload = {
@@ -47,17 +62,17 @@ export default function Cakes() {
     fetchData();
   };
 
-  const handleEditCake = (cake) => {
+  const handleEditCake = (cake: Cake) => {
     setCakeForm({
       id: cake.id,
       name: cake.name,
-      purchasePrice: cake.purchasePrice,
-      sellingPrice: cake.sellingPrice,
-      producerId: cake.producerId,
+      purchasePrice: String(cake.purchasePrice),
+      sellingPrice: String(cake.sellingPrice),
+      producerId: String(cake.producerId),
     });
   };
 
-  const handleDeleteCake = async (id) => {
+  const handleDeleteCake = async (id: number) => {
     if (!confirm("Yakin hapus kue ini?")) return;
     await fetch("/api/producer-cake", {
       method: "DELETE",
@@ -135,19 +150,22 @@ export default function Cakes() {
               </tr>
             </thead>
             <tbody>
-              {cakes.map((c, i) => (
-                <tr key={c.id}>
-                  <td className="border px-2 py-1">{i + 1}</td>
-                  <td className="border px-2 py-1">{c.name}</td>
-                  <td className="border px-2 py-1">{c.producer?.name}</td>
-                  <td className="border px-2 py-1">Rp{c.purchasePrice.toLocaleString()}</td>
-                  <td className="border px-2 py-1">Rp{c.sellingPrice.toLocaleString()}</td>
-                  <td className="border px-2 py-1 flex gap-1">
-                    <button className="text-green-600" onClick={() => handleEditCake(c)}>Edit</button>
-                    <button className="text-red-600" onClick={() => handleDeleteCake(c.id)}>Hapus</button>
-                  </td>
-                </tr>
-              ))}
+              {cakes
+                .slice()
+                .sort((a, b) => (a.producer?.name || '').localeCompare(b.producer?.name || ''))
+                .map((c, i) => (
+                  <tr key={c.id}>
+                    <td className="border px-2 py-1">{i + 1}</td>
+                    <td className="border px-2 py-1">{c.name}</td>
+                    <td className="border px-2 py-1">{c.producer?.name}</td>
+                    <td className="border px-2 py-1">Rp{c.purchasePrice.toLocaleString()}</td>
+                    <td className="border px-2 py-1">Rp{c.sellingPrice.toLocaleString()}</td>
+                    <td className="border px-2 py-1 flex gap-1">
+                      <button className="text-green-600" onClick={() => handleEditCake(c)}>Edit</button>
+                      <button className="text-red-600" onClick={() => handleDeleteCake(c.id)}>Hapus</button>
+                    </td>
+                  </tr>
+                ))}
               {cakes.length === 0 && (
                 <tr><td colSpan={6} className="text-center py-2">Belum ada kue</td></tr>
               )}
