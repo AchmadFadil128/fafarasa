@@ -32,7 +32,6 @@ services:
     networks:
       - default
     volumes:
-      - .:/app
       - /app/node_modules
 
 volumes:
