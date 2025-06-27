@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Definisikan tipe data
 interface DailyEntry {
@@ -23,7 +23,7 @@ export default function StockOut() {
   const [loading, setLoading] = useState(false);
 
   // Fetch data stok yang sudah ada untuk tanggal terpilih
-  const fetchEntries = async (date = selectedDate) => {
+  const fetchEntries = useCallback(async (date = selectedDate) => {
     setLoading(true);
     const res = await fetch(`/api/daily-entry?date=${date}`);
     const data: DailyEntry[] = await res.json();
@@ -39,9 +39,9 @@ export default function StockOut() {
     });
     setDailyForm(formObj);
     setLoading(false);
-  };
+  }, [selectedDate]);
 
-  useEffect(() => { fetchEntries(); }, [selectedDate]);
+  useEffect(() => { fetchEntries(); }, [selectedDate, fetchEntries]);
 
   const handleInputChange = (cakeId: number, value: string) => {
     setDailyForm({

@@ -191,7 +191,7 @@ export default function Dashboard() {
                   title: { display: false },
                   tooltip: {
                     callbacks: {
-                      label: (ctx: any) => `Rp${ctx.parsed.y.toLocaleString()}`,
+                      label: (ctx: { parsed: { y: number } }) => `Rp${ctx.parsed.y.toLocaleString()}`,
                     },
                   },
                 },
@@ -199,7 +199,7 @@ export default function Dashboard() {
                   y: {
                     beginAtZero: true,
                     ticks: {
-                      callback: (v: any) => 'Rp' + v.toLocaleString(),
+                      callback: (v: string | number) => 'Rp' + Number(v).toLocaleString(),
                     },
                   },
                 },

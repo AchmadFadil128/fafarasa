@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Definisikan tipe data
 interface DailyEntry {
@@ -20,15 +20,15 @@ export default function StockReport() {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [loading, setLoading] = useState(false);
 
-  const fetchEntries = async (date = selectedDate) => {
+  const fetchEntries = useCallback(async (date = selectedDate) => {
     setLoading(true);
     const res = await fetch(`/api/daily-entry?date=${date}`);
     const data: DailyEntry[] = await res.json();
     setEntries(data);
     setLoading(false);
-  };
+  }, [selectedDate]);
 
-  useEffect(() => { fetchEntries(); }, [selectedDate]);
+  useEffect(() => { fetchEntries(); }, [selectedDate, fetchEntries]);
 
   return (
     <div className="w-full max-w-2xl mx-auto py-4">
