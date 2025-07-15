@@ -1,30 +1,9 @@
 version: '3.8'
 services:
-  db:
-    image: mysql:8
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: fafarasa
-      MYSQL_USER: fafarasa
-      MYSQL_PASSWORD: fafarasa
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   web:
     build: .
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://fafarasa:fafarasa@db:3306/fafarasa"
+      DATABASE_URL: "mysql://fafarasa:fafarasa@host.docker.internal:3306/fafarasa"
       NODE_ENV: production
     ports:
       - "8832:3000"
@@ -33,6 +12,10 @@ services:
       - default
     volumes:
       - /app/node_modules
+    command: sh -c "npx prisma migrate deploy && npm start"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
-volumes:
-  db_data: 
+networks:
+  default:
+    driver: bridge 
