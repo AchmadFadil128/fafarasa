@@ -29,7 +29,7 @@ cd fafarasa
 ```bash
 # Setup MySQL lokal di VPS
 chmod +x setup-mysql-local.sh
-./setup-mysql-local.sh
+sudo ./setup-mysql-local.sh
 ```
 
 3. **Deploy with Docker Compose**
