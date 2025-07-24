@@ -208,34 +208,155 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-      {/* Tabel Laporan */}
-      <div className="mt-8 bg-white rounded-lg shadow p-4 border border-green-100">
-        <h2 className="text-base font-semibold mb-2 text-green-700">Laporan Penjualan & Keuntungan</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-2 py-1">Periode</th>
-                <th className="border px-2 py-1">Kue Terjual</th>
-                <th className="border px-2 py-1">Total Keuntungan</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map(item => (
-                <tr key={item.period}>
-                  <td className="border px-2 py-1">{item.period}</td>
-                  <td className="border px-2 py-1">{item.sold.toLocaleString()}</td>
-                  <td className="border px-2 py-1">Rp{item.profit.toLocaleString()}</td>
-                </tr>
-              ))}
-              {tableData.length === 0 && (
-                <tr><td colSpan={3} className="text-center py-2">Tidak ada data untuk periode ini.</td></tr>
-              )}
-            </tbody>
-          </table>
+      {/* Modern Laporan Table */}
+<div className="mt-8 space-y-6">
+  <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
+    {/* Header */}
+    <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-6 py-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+              Laporan Penjualan & Keuntungan
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">Data performa bisnis terkini</p>
+          </div>
+        </div>
+        <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+          {tableData.length} Periode
         </div>
       </div>
     </div>
+
+    {/* Table Content */}
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
+            <th className="text-left px-6 py-4 font-semibold text-gray-700">
+              <div className="flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>Periode</span>
+              </div>
+            </th>
+            <th className="text-left px-6 py-4 font-semibold text-gray-700">
+              <div className="flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span>Kue Terjual</span>
+              </div>
+            </th>
+            <th className="text-left px-6 py-4 font-semibold text-gray-700">
+              <div className="flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+                <span>Total Keuntungan</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200/30">
+          {tableData.length > 0 ? (
+            tableData.map((item, index) => (
+              <tr 
+                key={item.period}
+                className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
+              >
+                <td className="px-6 py-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center group-hover:from-green-200 group-hover:to-emerald-200 transition-colors">
+                      <span className="text-sm font-semibold text-green-700">
+                        {item.period.split('-')[1] || item.period.slice(-2)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{item.period}</p>
+                      <p className="text-xs text-gray-500">{filter === 'monthly' ? 'Bulanan' : filter === 'weekly' ? 'Mingguan' : 'Harian'}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-1">
+                      <p className="text-lg font-bold text-gray-900">
+                        {item.sold.toLocaleString()}
+                      </p>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div 
+                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+                          style={{ 
+                            width: `${Math.min((item.sold / Math.max(...tableData.map(d => d.sold))) * 100, 100)}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-gray-900">
+                      Rp {item.profit.toLocaleString()}
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="px-6 py-12 text-center">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 font-medium">Tidak ada data untuk periode ini</p>
+                    <p className="text-sm text-gray-400">Data akan muncul setelah ada transaksi</p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+    {/* Summary Footer */}
+    {tableData.length > 0 && (
+      <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-t border-white/20 px-6 py-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Total Periode</p>
+            <p className="text-2xl font-bold text-green-700">{tableData.length}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Total Kue Terjual</p>
+            <p className="text-2xl font-bold text-green-700">
+              {tableData.reduce((sum, item) => sum + item.sold, 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Total Keuntungan</p>
+            <p className="text-2xl font-bold text-green-700">
+              Rp {tableData.reduce((sum, item) => sum + item.profit, 0).toLocaleString()}
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+    </div>
+    
   );
-} 
+}

@@ -298,12 +298,10 @@ export default function ProducerSalesSummary() {
                       </tr>
                       <tr className="bg-gray-50">
                         <th className="border border-gray-300 px-3 py-2"></th>
-                        {producer.cakes.map(cake => (
-                          <>
-                            <th key={`${cake.id}-kirim`} className="border border-gray-300 px-2 py-1 text-xs">KIRIM</th>
-                            <th key={`${cake.id}-laku`} className="border border-gray-300 px-2 py-1 text-xs">LAKU</th>
-                          </>
-                        ))}
+                        {producer.cakes.map(cake => [
+                          <th key={`${cake.id}-kirim`} className="border border-gray-300 px-2 py-1 text-xs">KIRIM</th>,
+                          <th key={`${cake.id}-laku`} className="border border-gray-300 px-2 py-1 text-xs">LAKU</th>
+                        ])}
                       </tr>
                     </thead>
                     <tbody>
@@ -340,16 +338,14 @@ export default function ProducerSalesSummary() {
                       {/* Total Row */}
                       <tr className="bg-green-50 font-semibold">
                         <td className="border border-gray-300 px-3 py-2">Total</td>
-                        {producer.cakes.map(cake => (
-                          <>
-                            <td key={`${cake.id}-total-kirim`} className="border border-gray-300 px-2 py-1 text-center">
-                              {cake.kirim}
-                            </td>
-                            <td key={`${cake.id}-total-laku`} className="border border-gray-300 px-2 py-1 text-center">
-                              {cake.laku}
-                            </td>
-                          </>
-                        ))}
+                        {producer.cakes.map(cake => [
+                          <td key={`${cake.id}-total-kirim`} className="border border-gray-300 px-2 py-1 text-center">
+                            {cake.kirim}
+                          </td>,
+                          <td key={`${cake.id}-total-laku`} className="border border-gray-300 px-2 py-1 text-center">
+                            {cake.laku}
+                          </td>
+                        ])}
                       </tr>
                     </tbody>
                   </table>
