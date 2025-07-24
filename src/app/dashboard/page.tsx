@@ -266,7 +266,7 @@ export default function Dashboard() {
         </thead>
         <tbody className="divide-y divide-gray-200/30">
           {tableData.length > 0 ? (
-            tableData.map((item, index) => (
+            tableData.map(item => (
               <tr 
                 key={item.period}
                 className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
