@@ -50,11 +50,13 @@ interface DailyEntry {
 const getWeekRange = (date: Date) => {
   const d = new Date(date);
   const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
-  const monday = new Date(d.setDate(diff));
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  return { start: monday, end: sunday };
+  // Sabtu = 6, Jumat = 5
+  // Hitung selisih ke Sabtu sebelumnya
+  const diff = d.getDate() - ((day + 1) % 7); // Sabtu sebagai awal minggu
+  const saturday = new Date(d.setDate(diff));
+  const friday = new Date(saturday);
+  friday.setDate(saturday.getDate() + 6);
+  return { start: saturday, end: friday };
 };
 
 // Helper function to format date
@@ -115,7 +117,7 @@ export default function ProducerSalesSummary() {
 
       // Fetch data for each day in the week
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-        const dateStr = d.toISOString().slice(0, 10);
+        const dateStr = d.toLocaleDateString('en-CA');
         try {
           const res = await fetch(`/api/daily-entry?date=${dateStr}`);
           const dailyEntries: DailyEntry[] = await res.json();
@@ -313,7 +315,7 @@ export default function ProducerSalesSummary() {
                           days.push(new Date(d));
                         }
                         return days.map(day => {
-                          const dateStr = day.toISOString().slice(0, 10);
+                          const dateStr = day.toLocaleDateString('en-CA');
                           return (
                             <tr key={day.toISOString()}>
                               <td className="border border-gray-300 px-3 py-2">
