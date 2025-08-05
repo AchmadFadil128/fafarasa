@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import SessionProvider from "@/components/SessionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +18,17 @@ const geistMono = Geist_Mono({
 });
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionProvider>
+      <ClientLayoutContent>{children}</ClientLayoutContent>
+    </SessionProvider>
+  );
+}
+
+function ClientLayoutContent({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  
   return (
     <html lang="id">
       <body
@@ -49,6 +61,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   <NavLink href="/stock-out">Stok Sore</NavLink>
                   <NavLink href="/stock">Rekap Stok</NavLink>
                   <NavLink href="/rekap-penjualan">Rekap</NavLink>
+                  {session && (
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className="px-4 py-2 text-sm font-medium text-red-700 hover:text-red-800 rounded-xl transition-all duration-300 hover:bg-red-50/80"
+                    >
+                      Logout
+                    </button>
+                  )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -76,6 +96,19 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     <MobileNavLink href="/stock" onClick={() => setMobileMenuOpen(false)}>Rekap Stok</MobileNavLink>
                     <MobileNavLink href="/rekap-penjualan" onClick={() => setMobileMenuOpen(false)}>Rekap Penjualan</MobileNavLink>
                   </div>
+                  {session && (
+                    <div className="mt-4 pt-4 border-t border-gray-200/50">
+                      <button
+                        onClick={() => {
+                          signOut({ callbackUrl: "/login" });
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-sm font-medium text-red-700 hover:text-red-800 rounded-xl transition-all duration-300 hover:bg-red-50/80 text-center"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
