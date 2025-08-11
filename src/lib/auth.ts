@@ -1,5 +1,7 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
+import { prisma } from "@/lib/prisma"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -26,21 +28,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         return null
       }
-    })
+    }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
   pages: {
     signIn: "/login"
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        const email = user?.email || (profile as any)?.email
+        if (!email) return "/login?error=AccessDenied"
+        const allowed = await prisma.allowedEmail.findUnique({ where: { email } })
+        if (!allowed) {
+          return "/login?error=AccessDenied"
+        }
+      }
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
+        // Ensure role is always present (default to 'user' for OAuth users)
+        token.role = (user as any).role ?? token.role ?? "user"
+      }
+      if (!token.role) {
+        token.role = "user"
       }
       return token
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.role = token.role as string
+      if (session.user) {
+        // Map stable id from token.sub (OAuth) or keep existing
+        ;(session.user as any).id = (token.sub as string) || (session.user as any).id || ""
+        session.user.role = (token.role as string) || "user"
       }
       return session
     }

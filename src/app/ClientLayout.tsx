@@ -28,6 +28,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 function ClientLayoutContent({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
   
   return (
     <html lang="id">
@@ -61,6 +62,7 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                   <NavLink href="/stock-out">Stok Sore</NavLink>
                   <NavLink href="/stock">Rekap Stok</NavLink>
                   <NavLink href="/rekap-penjualan">Rekap</NavLink>
+                  {isAdmin && <NavLink href="/allowed-emails">Whitelist</NavLink>}
                   {session && (
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
@@ -95,6 +97,7 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                     <MobileNavLink href="/stock-out" onClick={() => setMobileMenuOpen(false)}>Stok Sore</MobileNavLink>
                     <MobileNavLink href="/stock" onClick={() => setMobileMenuOpen(false)}>Rekap Stok</MobileNavLink>
                     <MobileNavLink href="/rekap-penjualan" onClick={() => setMobileMenuOpen(false)}>Rekap Penjualan</MobileNavLink>
+                    {isAdmin && <MobileNavLink href="/allowed-emails" onClick={() => setMobileMenuOpen(false)}>Whitelist</MobileNavLink>}
                   </div>
                   {session && (
                     <div className="mt-4 pt-4 border-t border-gray-200/50">
