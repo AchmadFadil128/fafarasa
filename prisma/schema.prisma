@@ -36,3 +36,9 @@ model DailyEntry {
   initialStock   Int
   remainingStock Int?
 }
+
+model AllowedEmail {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
