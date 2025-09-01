@@ -58,7 +58,7 @@ export default function LoginPage() {
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
               Masuk ke Fafa Rasa ERP
-            </h2>
+          </h2>
             <p className="text-sm text-gray-500">Silakan masuk untuk melanjutkan</p>
           </div>
 
@@ -76,62 +76,62 @@ export default function LoginPage() {
               </svg>
               <span>Masuk dengan Google</span>
             </button>
-          </div>
+        </div>
 
           <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="sr-only">
-                  Username
-                </label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
                   className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
 
-            {error && (
+          {error && (
               <div className="rounded-xl bg-red-50/90 border border-red-200 p-4">
-                <div className="flex">
+              <div className="flex">
                   <div className="ml-1">
                     <h3 className="text-sm font-medium text-red-800">{error}</h3>
-                  </div>
                 </div>
               </div>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-              >
-                {isLoading ? "Memproses..." : "Masuk"}
-              </button>
             </div>
-          </form>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+                className="group relative w-full flex justify-center py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            >
+                {isLoading ? "Memproses..." : "Masuk"}
+            </button>
+          </div>
+        </form>
         </div>
       </div>
     </div>

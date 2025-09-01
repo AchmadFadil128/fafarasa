@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import { prisma } from "@/lib/prisma"
+import bcrypt from "bcryptjs"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -16,10 +17,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null
         }
 
-        // Check for admin/admin credentials
-        if (credentials.username === "admin" && credentials.password === "admin") {
+        // Check database for admin credentials
+        const admin = await prisma.adminUser.findUnique({
+          where: { username: credentials.username as string }
+        })
+
+        if (admin && await bcrypt.compare(credentials.password as string, admin.password)) {
           return {
-            id: "1",
+            id: admin.id.toString(),
             name: "Admin",
             email: "admin@example.com",
             role: "admin"
@@ -71,4 +76,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt"
   }
-}) 
+})
