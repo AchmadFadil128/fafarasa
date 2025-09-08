@@ -12,6 +12,8 @@ import {
 } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import LogoutButton from '../../components/LogoutButton';
 
 ChartJS.register(
   CategoryScale,
@@ -55,6 +57,7 @@ interface ReportDataItem {
 }
 
 export default function Dashboard() {
+  const { data: session } = useSession();
   const [chartData, setChartData] = useState<ChartDataState>({ labels: [], sales: [], profits: [] });
   const [tableData, setTableData] = useState<ReportDataItem[]>([]);
   const [filter, setFilter] = useState('daily'); // daily, weekly, monthly
@@ -126,7 +129,17 @@ export default function Dashboard() {
 
   return (
     <div className="w-full max-w-5xl mx-auto py-4">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-green-700">Dashboard Performa & Keuntungan</h1>
+      {/* Header with user info and logout */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-green-700">Dashboard Performa & Keuntungan</h1>
+        <div className="flex items-center space-x-4">
+          <div className="text-right">
+            <p className="text-sm text-gray-600">Welcome, <span className="font-semibold">{session?.user?.username}</span></p>
+            <p className="text-xs text-gray-500">Role: {session?.user?.role}</p>
+          </div>
+          <LogoutButton />
+        </div>
+      </div>
       
       {/* Filter Buttons */}
       <div className="flex justify-center gap-2 mb-6">

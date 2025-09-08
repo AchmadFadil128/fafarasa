@@ -1,10 +1,8 @@
-version: '3.8'
 services:
   web:
     build: .
-    environment:
-      DATABASE_URL: "mysql://fafarasa:fafarasa@host.docker.internal:3306/fafarasa"
-      NODE_ENV: production
+    env_file:
+      - .env.local
     ports:
       - "8832:3000"
     restart: always
@@ -18,4 +16,4 @@ services:
 
 networks:
   default:
-    driver: bridge 
+    driver: bridge
