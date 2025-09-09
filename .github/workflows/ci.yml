@@ -16,7 +16,7 @@ jobs:
     env:
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: test-secret-ci
-      NODE_ENV: development
+      NODE_ENV: production
 
     steps:
       - name: Checkout
