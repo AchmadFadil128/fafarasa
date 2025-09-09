@@ -146,3 +146,19 @@ npx prisma generate
 
 # Buat user admin default
 node scripts/setup-auth.js
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/signin` - Login
+- `POST /api/auth/signout` - Logout
+- `GET /api/auth/session` - Get current session
+
+### Protected Routes
+Semua route kecuali `/login` dan `/` memerlukan autentikasi.
+
+## Security Features
+- Password hashing dengan bcrypt (salt rounds: 10)
+- JWT tokens untuk session management
+- Protected routes dengan middleware
+- Role-based access control
