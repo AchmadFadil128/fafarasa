@@ -10,7 +10,7 @@ export async function GET() {
     // Lightweight DB check (does not create a connection pool explosion)
     await prisma.$queryRawUnsafe('SELECT 1');
     return NextResponse.json({ status: 'ok', db: 'ok' });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ status: 'degraded', db: 'error' }, { status: 500 });
   }
 }
