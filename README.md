@@ -138,8 +138,27 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Deploy on Vercel
+# Jika migrate dev gagal (shadow DB), gunakan db push
+npx prisma db push
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# (opsional) generate client ulang
+npx prisma generate
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Buat user admin default
+node scripts/setup-auth.js
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/signin` - Login
+- `POST /api/auth/signout` - Logout
+- `GET /api/auth/session` - Get current session
+
+### Protected Routes
+Semua route kecuali `/login` dan `/` memerlukan autentikasi.
+
+## Security Features
+- Password hashing dengan bcrypt (salt rounds: 10)
+- JWT tokens untuk session management
+- Protected routes dengan middleware
+- Role-based access control

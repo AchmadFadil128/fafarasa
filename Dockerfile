@@ -1,41 +1,39 @@
-# Gunakan image Node.js LTS
+# Builder stage
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
 COPY . .
 RUN npm run build
 
-# Production image
-FROM node:20-alpine AS runner
+# Production stage
+FROM node:20-alpine AS production
 WORKDIR /app
-ENV NODE_ENV=production
 
-# Install dependencies for production
+# Install production dependencies only
 COPY --from=builder /app/package*.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production && npm cache clean --force
 
-# Copy built application
+# Copy built application and Prisma client
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/health-check.js ./
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-# Generate Prisma client in production
-RUN npx prisma generate
-
-# Create a startup script
-RUN echo '#!/bin/sh' > /app/start.sh && \
-    echo 'echo "Waiting for database to be ready..."' >> /app/start.sh && \
-    echo 'npx prisma migrate deploy' >> /app/start.sh && \
-    echo 'echo "Running health check..."' >> /app/start.sh && \
-    echo 'node health-check.js' >> /app/start.sh && \
-    echo 'echo "Starting application..."' >> /app/start.sh && \
-    echo 'npm start' >> /app/start.sh && \
-    chmod +x /app/start.sh
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+RUN chown -R nextjs:nodejs /app
+USER nextjs
 
 EXPOSE 3000
-CMD ["/app/start.sh"] 
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Use node directly instead of npm for better signal handling
+CMD ["node", "node_modules/.bin/next", "start"]
