@@ -1,152 +1,102 @@
 # Fafa Rasa - Cake Management System
 
-This is a [Next.js](https://nextjs.org) project for managing cake inventory and sales tracking.
+Ini adalah proyek [Next.js](https://nextjs.org) untuk mengatur stok dan penjualan kue.
 
 ## Features
 
-- Producer management
-- Cake inventory tracking
-- Daily stock entries
-- Sales analytics
-- PDF report generation
+- Manajemen produksi
+- Tracking stok kue
+- Pencatatan masuk dan keluar kue
+- Peforma produsen kue
 
-## Quick Start with Docker + Local MySQL
+## Quick Start dengan Docker dan Lokal MySQL
 
-### Prerequisites
+Saya memakai MySQL lokal agar database lebih aman jika sesuatu terjadi pada kontainer. Kedepannya projek ini akan berbasis microservices.
+
+### Syarat
 - Docker
 - Docker Compose
-- MySQL Server (local installation)
+- MySQL Server (installasi lokal)
 
-### Deployment
+### Memakai Docker Compose
 
-1. **Clone the repository**
+1. **Buat file docker-compose.yaml**
 ```bash
-git clone <repository-url>
-cd fafarasa
+version: '3.8'
+
+services:
+  web:
+    image: achmad/fafarasa:latest
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "8832:3000" #port 8832 bisa diganti
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  default:
+    driver: bridge
 ```
 
-2. **Setup MySQL Local (First time only)**
+2. **Buat file .env**
 ```bash
-# Setup MySQL lokal di VPS
-chmod +x setup-mysql-local.sh
-sudo ./setup-mysql-local.sh
+# Database Configuration
+DATABASE_URL="mysql://fafarasa:fafarasa@host.docker.internal:3306/fafarasa"
+
+# Username dan password database bisa disesuaikan, jika belum membuat database, lihat bagian bawah readme.
+
+# NextAuth Configuration
+NEXTAUTH_SECRET="Bebas, tapi saya sangat merekomendasikan membuat kunci dari https://generate-secret.vercel.app/32"
+NEXTAUTH_URL="Url yang akan digunakan untuk mengakses app"
+# Admin Configuration
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="admin123"
+
+# Environment
+NODE_ENV="production"
 ```
 
-3. **Deploy with Docker Compose**
+3. ****
 ```bash
-# Option 1: Use the deployment script (recommended)
-chmod +x deploy-local-mysql.sh
-./deploy-local-mysql.sh
-
-# Option 2: Manual deployment
 docker-compose up --build -d
 ```
 
-4. **Access the application**
-- Open [http://localhost:8832](http://localhost:8832) in your browser
-- The application will be ready automatically with database migrations applied
+4. **Akses ke aplikasi**
+- Buka [http://localhost:8832](http://localhost:8832) di browser.
 
-### Database Migration (If needed)
 
-If you have existing data in container MySQL:
+## Prisma - Menyiapkan Database MySQL Secara Lokal
 
+1. Buat terlebih dahulu databasenya
 ```bash
-# Backup dan migrasi data
-chmod +x migrate-data.sh
-./migrate-data.sh
+sudo mysql -e "
+CREATE DATABASE IF NOT EXISTS fafarasa;
+CREATE USER IF NOT EXISTS 'fafarasa'@'localhost' IDENTIFIED BY 'fafarasa';
+CREATE USER IF NOT EXISTS 'fafarasa'@'%' IDENTIFIED BY 'fafarasa';
+GRANT ALL PRIVILEGES ON fafarasa.* TO 'fafarasa'@'localhost';
+GRANT ALL PRIVILEGES ON fafarasa.* TO 'fafarasa'@'%';
+FLUSH PRIVILEGES;
 ```
+Default user dan password databasenya adalah fafarasa.
 
-## Development
-
-### Local Development
-
+2. Lakukan konfigurasi agar dapat menerima koneksi dari Docker
 ```bash
-npm install
-npm run dev
+sudo sed -i 's/bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser.
-
-### Database Management
-
-The application uses MySQL with Prisma ORM. Database migrations are automatically applied during deployment.
-
-## Maintenance
-
-### Database Backup
-```bash
-# Manual backup
-chmod +x backup-db.sh
-./backup-db.sh
 
 # Setup automatic backup (cron job)
+```
 # Add to crontab: 0 2 * * * /path/to/fafarasa/backup-db.sh
 ```
-
-### Monitoring
-```bash
-# Check MySQL status
-chmod +x monitor-mysql.sh
-./monitor-mysql.sh
-```
-
-## Troubleshooting
-
-### Database Issues
-- If MySQL service is down:
-```bash
-sudo systemctl status mysql
-sudo systemctl restart mysql
-```
-
-### Container Issues
-- If the web container can't connect to MySQL:
-```bash
-# Check MySQL is running
-sudo systemctl status mysql
-
-# Check MySQL binding
-sudo grep bind-address /etc/mysql/mysql.conf.d/mysqld.cnf
-
-# Restart MySQL
-sudo systemctl restart mysql
-```
-
-### Reset Everything
-```bash
-docker-compose down
-docker system prune -f
-./deploy-local-mysql.sh
-```
-
-### View Logs
-```bash
-# All services
-docker-compose logs -f
-
-# Specific service
-docker-compose logs -f web
-
-# MySQL logs
-sudo tail -f /var/log/mysql/error.log
-```
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-# Jika migrate dev gagal (shadow DB), gunakan db push
-npx prisma db push
-
-# (opsional) generate client ulang
-npx prisma generate
-
-# Buat user admin default
-node scripts/setup-auth.js
-
 ## API Endpoints
 
 ### Authentication
@@ -155,7 +105,7 @@ node scripts/setup-auth.js
 - `GET /api/auth/session` - Get current session
 
 ### Protected Routes
-Semua route kecuali `/login` dan `/` memerlukan autentikasi.
+Semua route kecuali `/login` memerlukan autentikasi.
 
 ## Security Features
 - Password hashing dengan bcrypt (salt rounds: 10)
