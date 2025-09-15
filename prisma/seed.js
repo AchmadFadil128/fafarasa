@@ -10,8 +10,6 @@ async function main() {
   const adminUsername = process.env.ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
-  // Ensure table exists by querying prisma.$queryRaw? Not necessary if prisma db push/migrate ran
-
   const existing = await prisma.userLogin.findUnique({
     where: { username: adminUsername },
   }).catch((err) => {
