@@ -8,6 +8,7 @@ Ini adalah proyek [Next.js](https://nextjs.org) untuk mengatur stok dan penjuala
 - Tracking stok kue
 - Pencatatan masuk dan keluar kue
 - Peforma produsen kue
+- Login
 
 ## Quick Start dengan Docker dan Lokal MySQL
 
@@ -29,7 +30,7 @@ services:
     image: achmad/fafarasa:latest
     restart: unless-stopped
     env_file:
-      - .env.production
+      - .env
     ports:
       - "8832:3000" #port 8832 bisa diganti
     networks:
@@ -57,17 +58,14 @@ DATABASE_URL="mysql://fafarasa:fafarasa@host.docker.internal:3306/fafarasa"
 # NextAuth Configuration
 NEXTAUTH_SECRET="Bebas, tapi saya sangat merekomendasikan membuat kunci dari https://generate-secret.vercel.app/32"
 NEXTAUTH_URL="Url yang akan digunakan untuk mengakses app"
-# Admin Configuration
-ADMIN_USERNAME="admin"
-ADMIN_PASSWORD="admin123"
 
 # Environment
 NODE_ENV="production"
 ```
 
-3. ****
+3. Jalankan perintah dibawah ini
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 4. **Akses ke aplikasi**
@@ -86,7 +84,7 @@ GRANT ALL PRIVILEGES ON fafarasa.* TO 'fafarasa'@'localhost';
 GRANT ALL PRIVILEGES ON fafarasa.* TO 'fafarasa'@'%';
 FLUSH PRIVILEGES;
 ```
-Default user dan password databasenya adalah fafarasa.
+Default user dan password databasenya adalah fafarasa, bisa anda ganti dengan user dan password sendiri. Sesuaikan user dan passwordnya di file .env
 
 2. Lakukan konfigurasi agar dapat menerima koneksi dari Docker
 ```bash
@@ -104,7 +102,7 @@ sudo sed -i 's/bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/m
 - `POST /api/auth/signout` - Logout
 - `GET /api/auth/session` - Get current session
 
-### Protected Routes
+## Protected Routes
 Semua route kecuali `/login` memerlukan autentikasi.
 
 ## Security Features
