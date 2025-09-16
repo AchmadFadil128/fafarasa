@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding authentication data...');
 
-  // Gunakan nilai default 'admin' dan 'admin123' tanpa bergantung pada .env
+  // Gunakan nilai default 'admin' dan 'admin123
   const adminUsername = process.env.ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
   
@@ -36,7 +36,7 @@ async function main() {
   console.log('Admin user created with default credentials:');
   console.log(`Username: ${adminUsername}`);
   console.log(`Password: ${adminPassword}`);
-  console.log('⚠️ Please change these credentials after first login!');
+  console.log('Please change these credentials after first login!');
 }
 
 main()
