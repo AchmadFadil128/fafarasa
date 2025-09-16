@@ -13,7 +13,6 @@ import {
 import { Bar, Line } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import LogoutButton from '../../components/LogoutButton';
 
 ChartJS.register(
   CategoryScale,
@@ -137,7 +136,6 @@ export default function Dashboard() {
             <p className="text-sm text-gray-600">Welcome, <span className="font-semibold">{session?.user?.username}</span></p>
             <p className="text-xs text-gray-500">Role: {session?.user?.role}</p>
           </div>
-          <LogoutButton />
         </div>
       </div>
       

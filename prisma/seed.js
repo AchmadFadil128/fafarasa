@@ -10,8 +10,7 @@ async function main() {
   // Gunakan nilai default 'admin' dan 'admin123' tanpa bergantung pada .env
   const adminUsername = process.env.ADMIN_USERNAME || 'admin';
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-
-  // Cek apakah sudah ada user admin
+  
   const existing = await prisma.userLogin.findUnique({
     where: { username: adminUsername },
   }).catch((err) => {
