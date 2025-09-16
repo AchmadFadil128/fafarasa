@@ -7,22 +7,27 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding authentication data...');
 
-  // Gunakan nilai default 'admin' dan 'admin123
-  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-  
-  const existing = await prisma.userLogin.findUnique({
-    where: { username: adminUsername },
-  }).catch((err) => {
+  // Nilai default hardcoded (tidak lagi menggunakan .env)
+  const adminUsername = 'admin';
+  const adminPassword = 'admin123';
+
+  // Cek user ADMIN
+  let existingAdmin;
+  try {
+    existingAdmin = await prisma.userLogin.findFirst({
+      where: { role: 'ADMIN' },
+    });
+  } catch (err) {
     console.error('Error querying UserLogin. Did you run migrations?');
     throw err;
-  });
+  }
 
-  if (existing) {
-    console.log('Admin user already exists');
+  if (existingAdmin) {
+    console.log('Ada user dengan role ADMIN. Seed dilewati (tidak menambah admin baru).');
     return;
   }
 
+  // Buat user ADMIN
   const hashed = await bcrypt.hash(adminPassword, 10);
 
   const admin = await prisma.userLogin.create({

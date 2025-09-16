@@ -35,5 +35,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-# Use JSON format for CMD with proper signal handling
-CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node node_modules/.bin/next start"]
