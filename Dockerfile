@@ -5,8 +5,6 @@ COPY package*.json ./
 RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
-RUN npx prisma migrate deploy
-RUN npm prisma db seed
 COPY . .
 RUN npm run build
 
@@ -18,12 +16,12 @@ WORKDIR /app
 COPY --from=builder /app/package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy built application and Prisma client
+# Copy built application, Prisma schema, and migrations
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs
@@ -33,9 +31,9 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check
+# Health check (using wget instead of curl which isn't available in alpine)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/api/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
-# Use node directly instead of npm for better signal handling
-CMD ["node", "node_modules/.bin/next", "start"]
+# Use JSON format for CMD with proper signal handling
+CMD ["sh", "-c", "npx prisma migrate deploy && node node_modules/.bin/next start"]
