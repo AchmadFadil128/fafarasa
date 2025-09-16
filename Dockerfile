@@ -5,6 +5,8 @@ COPY package*.json ./
 RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
+RUN npx prisma migrate deploy
+RUN npm prisma db seed
 COPY . .
 RUN npm run build
 
