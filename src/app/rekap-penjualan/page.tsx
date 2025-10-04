@@ -8,13 +8,17 @@ interface CakeData {
   name: string;
   kirim: number;
   laku: number;
+  sellingPrice: number;
+  purchasePrice: number;
+  revenue: number;
+  profit: number;
 }
 
-// Tambahkan tipe baru untuk data harian
 interface DailyCakeData {
   [cakeId: string]: {
     kirim: number | null;
     laku: number | null;
+    revenue: number | null;
   };
 }
 
@@ -25,7 +29,6 @@ interface ProducerData {
   cakes: CakeData[];
   weeklyKirim: number;
   weeklyLaku: number;
-  // Tambahan: data harian per tanggal
   dailyData: {
     [date: string]: DailyCakeData;
   };
@@ -46,13 +49,11 @@ interface DailyEntry {
   };
 }
 
-// Helper function to get the start and end of the week (Monday to Sunday)
+// Helper function to get the start and end of the week (Saturday to Friday)
 const getWeekRange = (date: Date) => {
   const d = new Date(date);
   const day = d.getDay();
-  // Sabtu = 6, Jumat = 5
-  // Hitung selisih ke Sabtu sebelumnya
-  const diff = d.getDate() - ((day + 1) % 7); // Sabtu sebagai awal minggu
+  const diff = d.getDate() - ((day + 1) % 7);
   const saturday = new Date(d.setDate(diff));
   const friday = new Date(saturday);
   friday.setDate(saturday.getDate() + 6);
@@ -61,23 +62,27 @@ const getWeekRange = (date: Date) => {
 
 // Helper function to format date
 const formatDate = (date: Date) => {
-  return date.toLocaleDateString('id-ID', { 
-    day: '2-digit', 
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
     month: '2-digit',
     year: 'numeric'
   });
+};
+
+const formatCurrency = (value: number) => {
+  return `Rp ${value.toLocaleString('id-ID')}`;
 };
 
 // Helper function to get week options (last 12 weeks)
 const getWeekOptions = () => {
   const options = [];
   const today = new Date();
-  
+
   for (let i = 0; i < 12; i++) {
     const weekDate = new Date(today);
     weekDate.setDate(today.getDate() - (i * 7));
     const { start, end } = getWeekRange(weekDate);
-    
+
     options.push({
       value: start.toISOString().slice(0, 10),
       label: `${formatDate(start)} - ${formatDate(end)}`,
@@ -85,7 +90,7 @@ const getWeekOptions = () => {
       end
     });
   }
-  
+
   return options;
 };
 
@@ -98,7 +103,6 @@ export default function ProducerSalesSummary() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set default to current week
     if (weekOptions.length > 0 && !selectedWeek) {
       setSelectedWeek(weekOptions[0].value);
     }
@@ -107,7 +111,7 @@ export default function ProducerSalesSummary() {
   useEffect(() => {
     const fetchProducerData = async () => {
       if (!selectedWeek) return;
-      
+
       setLoading(true);
       const selectedWeekOption = weekOptions.find(w => w.value === selectedWeek);
       if (!selectedWeekOption) return;
@@ -115,7 +119,6 @@ export default function ProducerSalesSummary() {
       const { start, end } = selectedWeekOption;
       const producerMap = new Map<string, ProducerData>();
 
-      // Fetch data for each day in the week
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         const dateStr = d.toLocaleDateString('en-CA');
         try {
@@ -136,43 +139,49 @@ export default function ProducerSalesSummary() {
                 cakes: [],
                 weeklyKirim: 0,
                 weeklyLaku: 0,
-                dailyData: {}, // tambahkan ini
+                dailyData: {},
               });
             }
 
             const producer = producerMap.get(producerId)!;
-            // Find or create cake entry
             let cakeEntry = producer.cakes.find(c => c.id === cakeId);
             if (!cakeEntry) {
               cakeEntry = {
                 id: cakeId,
                 name: cakeName,
                 kirim: 0,
-                laku: 0
+                laku: 0,
+                sellingPrice: entry.cake.sellingPrice,
+                purchasePrice: entry.cake.purchasePrice,
+                revenue: 0,
+                profit: 0,
               };
               producer.cakes.push(cakeEntry);
             }
 
-            // Inisialisasi dailyData untuk tanggal ini jika belum ada
             if (!producer.dailyData[dateStr]) {
               producer.dailyData[dateStr] = {};
             }
             if (!producer.dailyData[dateStr][cakeId]) {
-              producer.dailyData[dateStr][cakeId] = { kirim: null, laku: null };
+              producer.dailyData[dateStr][cakeId] = { kirim: null, laku: null, revenue: null };
             }
 
-            // Calculate daily data
             if (entry.initialStock !== null && entry.remainingStock !== null) {
               const kirim = entry.initialStock;
               const laku = entry.initialStock - entry.remainingStock;
-              // Simpan ke dailyData
-              producer.dailyData[dateStr][cakeId] = { kirim, laku };
-              // Akumulasi mingguan
+              const revenue = laku * entry.cake.sellingPrice;
+              const profit = laku * (entry.cake.sellingPrice - entry.cake.purchasePrice);
+
+              producer.dailyData[dateStr][cakeId] = { kirim, laku, revenue };
+
               cakeEntry.kirim += kirim;
               cakeEntry.laku += laku;
+              cakeEntry.revenue += revenue;
+              cakeEntry.profit += profit;
+
               producer.weeklyKirim += kirim;
               producer.weeklyLaku += laku;
-              producer.total += laku * entry.cake.purchasePrice;
+              producer.total += revenue;
             }
           });
         } catch (error) {
@@ -180,8 +189,7 @@ export default function ProducerSalesSummary() {
         }
       }
 
-      // Convert map to array and sort by producer name
-      const producersArray = Array.from(producerMap.values()).sort((a, b) => 
+      const producersArray = Array.from(producerMap.values()).sort((a, b) =>
         a.name.localeCompare(b.name)
       );
 
@@ -193,13 +201,12 @@ export default function ProducerSalesSummary() {
   }, [selectedWeek, weekOptions]);
 
   useEffect(() => {
-    // Filter data based on search term
     if (!searchTerm) {
       setFilteredData(producersData);
     } else {
-      const filtered = producersData.filter(producer => 
+      const filtered = producersData.filter(producer =>
         producer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        producer.cakes.some(cake => 
+        producer.cakes.some(cake =>
           cake.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
@@ -214,7 +221,7 @@ export default function ProducerSalesSummary() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-green-700">
         Rangkuman Penjualan per Producer
       </h1>
-      
+
       {/* Controls */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         {/* Week Selector */}
@@ -281,7 +288,7 @@ export default function ProducerSalesSummary() {
                     <h3 className="text-lg font-semibold">Nama: {producer.name}</h3>
                     <div className="text-right">
                       <p className="text-sm opacity-90">TOTAL</p>
-                      <p className="text-xl font-bold">Rp {producer.total.toLocaleString()}</p>
+                      <p className="text-xl font-bold">{formatCurrency(producer.total)}</p>
                     </div>
                   </div>
                 </div>
@@ -294,7 +301,10 @@ export default function ProducerSalesSummary() {
                         <th className="border border-gray-300 px-3 py-2 text-left">TGL</th>
                         {producer.cakes.map(cake => (
                           <th key={cake.id} className="border border-gray-300 px-3 py-2 text-center" colSpan={2}>
-                            {cake.name}
+                            <div>{cake.name}</div>
+                            <div className="text-xs font-semibold text-green-700 mt-1">
+                              (Total: {formatCurrency(cake.revenue)})
+                            </div>
                           </th>
                         ))}
                       </tr>
@@ -307,9 +317,9 @@ export default function ProducerSalesSummary() {
                       </tr>
                     </thead>
                     <tbody>
-                      {/* Daily rows would go here - for now showing weekly summary */}
+                      {/* Daily rows */}
                       {selectedWeekOption && (() => {
-                        const days = [];
+                        const days: Date[] = [];
                         const { start, end } = selectedWeekOption;
                         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
                           days.push(new Date(d));
@@ -336,7 +346,7 @@ export default function ProducerSalesSummary() {
                           );
                         });
                       })()}
-                      
+
                       {/* Total Row */}
                       <tr className="bg-green-50 font-semibold">
                         <td className="border border-gray-300 px-3 py-2">Total</td>
@@ -355,7 +365,7 @@ export default function ProducerSalesSummary() {
 
                 {/* Weekly Summary */}
                 <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="font-medium text-gray-700">Total Kirim Minggu Ini:</span>
                       <span className="ml-2 font-bold text-green-700">{producer.weeklyKirim}</span>
