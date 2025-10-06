@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CakeData {
   id: string;
@@ -52,7 +52,11 @@ export default function SalesReportPrint({
   onClose 
 }: SalesReportPrintProps) {
 
+  const hasPrintedRef = useRef(false);
+
   useEffect(() => {
+    if (hasPrintedRef.current) return;
+    hasPrintedRef.current = true;
     const getPrintContent = () => {
       if (!selectedWeekOption) return '';
 
@@ -150,15 +154,6 @@ export default function SalesReportPrint({
 
       const pagesHtml = pages.map((chunk, pageIdx) => `
         <div class="page${pageIdx < pages.length - 1 ? ' page-break' : ''}">
-          <div class="print-header">
-            <div class="print-title">LAPORAN PENJUALAN PER PRODUCER</div>
-            <div class="print-period">Periode: ${selectedWeekOption.label}</div>
-            <div class="print-date">
-              Dicetak pada: ${new Date().toLocaleDateString('id-ID', {
-                day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
-              })}
-            </div>
-          </div>
           <div class="producers-grid">
             ${chunk.map((producer) => `
               <div class="producer-card">
@@ -176,6 +171,7 @@ export default function SalesReportPrint({
     const handlePrint = () => {
       const printWindow = window.open('', '_blank');
       if (printWindow) {
+        printWindow.document.open();
         printWindow.document.write(`
           <!DOCTYPE html>
           <html>
@@ -346,8 +342,11 @@ export default function SalesReportPrint({
           </html>
         `);
         printWindow.document.close();
-        printWindow.print();
-        printWindow.close();
+        printWindow.focus();
+        // Trigger print once the new tab has rendered content
+        printWindow.onload = () => {
+          try { printWindow.print(); } catch {}
+        };
       }
       onClose();
     };
