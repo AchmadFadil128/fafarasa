@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { Search, ChevronDown } from 'lucide-react';
+import { Search, ChevronDown, Printer } from 'lucide-react';
+import SalesReportPrint from '@/components/print/SalesReportPrint';
 
 // Interface definitions
 interface CakeData {
@@ -101,6 +102,7 @@ export default function ProducerSalesSummary() {
   const [selectedWeek, setSelectedWeek] = useState('');
   const [weekOptions] = useState(getWeekOptions());
   const [loading, setLoading] = useState(true);
+  const [showPrintModal, setShowPrintModal] = useState(false);
 
   useEffect(() => {
     if (weekOptions.length > 0 && !selectedWeek) {
@@ -252,6 +254,16 @@ export default function ProducerSalesSummary() {
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
           />
         </div>
+
+        {/* Print Button */}
+        <button
+          onClick={() => setShowPrintModal(true)}
+          disabled={loading || filteredData.length === 0}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          <Printer className="w-4 h-4" />
+          Cetak Laporan
+        </button>
       </div>
 
       {/* Period Info */}
@@ -380,6 +392,15 @@ export default function ProducerSalesSummary() {
             ))
           )}
         </div>
+      )}
+
+      {/* Print Modal */}
+      {showPrintModal && selectedWeekOption && (
+        <SalesReportPrint
+          producersData={filteredData}
+          selectedWeekOption={selectedWeekOption}
+          onClose={() => setShowPrintModal(false)}
+        />
       )}
     </div>
   );
