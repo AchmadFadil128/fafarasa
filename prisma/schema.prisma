@@ -26,9 +26,10 @@ model UserLogin {
 }
 
 model Producer {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  cakes Cake[]
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  isHidden Boolean @default(false)
+  cakes    Cake[]
 }
 
 model Cake {

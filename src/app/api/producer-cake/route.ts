@@ -9,7 +9,11 @@ export async function GET() {
     include: { producer: true },
     orderBy: { id: 'asc' },
   });
-  const producers = await prisma.producer.findMany({ orderBy: { id: 'asc' } });
+  // Ambil hanya produsen yang tidak disembunyikan
+  const producers = await prisma.producer.findMany({ 
+    where: { isHidden: false }, 
+    orderBy: { id: 'asc' } 
+  });
   return NextResponse.json({ cakes, producers });
 }
 
@@ -38,9 +42,14 @@ export async function PUT(req: NextRequest) {
   const data = await req.json();
   if (data.type === 'producer') {
     // Edit produsen
+    const updateData: any = { name: data.name };
+    if (data.isHidden !== undefined) {
+      updateData.isHidden = data.isHidden;
+    }
+    
     const producer = await prisma.producer.update({
       where: { id: data.id },
-      data: { name: data.name },
+      data: updateData,
     });
     return NextResponse.json(producer);
   } else if (data.type === 'cake') {
@@ -62,9 +71,12 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const data = await req.json();
   if (data.type === 'producer') {
-    // Hapus produsen
-    await prisma.producer.delete({ where: { id: data.id } });
-    return NextResponse.json({ success: true });
+    // Hide produsen alih-alih menghapus
+    const producer = await prisma.producer.update({
+      where: { id: data.id },
+      data: { isHidden: true },
+    });
+    return NextResponse.json(producer);
   } else if (data.type === 'cake') {
     // Hapus kue
     await prisma.cake.delete({ where: { id: data.id } });

@@ -2,9 +2,16 @@
 import { useEffect, useState, useCallback } from "react";
 
 // Definisikan tipe data
+interface Producer {
+  id: number;
+  name: string;
+  isHidden: boolean;
+}
+
 interface Cake {
   id: number;
   name: string;
+  producer: Producer;
 }
 
 interface DailyForm {
@@ -28,7 +35,9 @@ export default function StockIn() {
   const fetchCakes = async () => {
     const res = await fetch("/api/producer-cake");
     const data = await res.json();
-    setCakes(data.cakes);
+    // Filter out cakes from hidden producers
+    const visibleCakes = data.cakes.filter((cake: Cake) => !cake.producer.isHidden);
+    setCakes(visibleCakes);
   };
 
   // Fetch data stok yang sudah ada untuk tanggal terpilih
@@ -76,55 +85,115 @@ export default function StockIn() {
     alert("Stok pagi berhasil disimpan!");
   };
 
+  const handleInputEnter = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const nextInput = document.getElementById(`stock-input-${index + 1}`) as HTMLInputElement | null;
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+      }
+    }
+  };
+
   return (
-    <div className="w-full max-w-lg mx-auto py-4">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-green-700">Input Stok Pagi</h1>
-      <div className="bg-white rounded-lg shadow p-4 border border-green-100 mb-6">
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
-          <label htmlFor="date">Tanggal:</label>
-          <input
-            id="date"
-            type="date"
-            value={selectedDate}
-            onChange={e => setSelectedDate(e.target.value)}
-            className="border px-2 py-1 rounded"
-          />
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div className="overflow-x-auto">
-            <table className="w-full border text-sm mb-2">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border px-2 py-1">Nama Kue</th>
-                  <th className="border px-2 py-1">Stok Awal (Pagi)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cakes.map(cake => (
-                  <tr key={cake.id}>
-                    <td className="border px-2 py-1">{cake.name}</td>
-                    <td className="border px-2 py-1">
-                      <input
-                        type="number"
-                        min="0"
-                        className="border px-1 py-0.5 rounded w-24"
-                        value={dailyForm[cake.id]?.initialStock ?? ""}
-                        onChange={e => handleInputChange(cake.id, e.target.value)}
-                        disabled={loading}
-                      />
-                    </td>
-                  </tr>
-                ))}
-                {cakes.length === 0 && (
-                  <tr><td colSpan={2} className="text-center py-2">Belum ada kue</td></tr>
-                )}
-              </tbody>
-            </table>
+    <div className="w-full max-w-5xl mx-auto py-4">
+      <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                  Form Input Stok Pagi
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">Masukkan jumlah stok awal untuk setiap jenis kue</p>
+              </div>
+            </div>
+            <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+              Tanggal: {new Date(selectedDate).toLocaleDateString('id-ID')}
+            </div>
           </div>
-          <button type="submit" className="bg-green-600 text-white px-4 py-1 rounded" disabled={loading}>
-            {loading ? "Menyimpan..." : "Simpan Stok Pagi"}
-          </button>
-        </form>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <label htmlFor="date" className="font-medium text-gray-700">Tanggal:</label>
+            <input
+              id="date"
+              type="date"
+              value={selectedDate}
+              onChange={e => setSelectedDate(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
+                    <th className="text-left px-6 py-4 font-semibold text-gray-700">Nama Kue</th>
+                    <th className="text-left px-6 py-4 font-semibold text-gray-700">Stok Awal (Pagi)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200/30">
+                  {cakes.map((cake, idx) => (
+                    <tr 
+                      key={cake.id}
+                      className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
+                    >
+                      <td className="px-6 py-4 font-medium text-gray-900">{cake.name}</td>
+                      <td className="px-6 py-4">
+                        <input
+                          type="number"
+                          min="0"
+                          className="border border-gray-300 rounded-lg px-3 py-2 w-32 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          value={dailyForm[cake.id]?.initialStock ?? ""}
+                          onChange={e => handleInputChange(cake.id, e.target.value)}
+                          onKeyDown={e => handleInputEnter(e, idx)}
+                          id={`stock-input-${idx}`}
+                          disabled={loading}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                  {cakes.length === 0 && (
+                    <tr>
+                      <td colSpan={2} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center space-y-3">
+                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-gray-500 font-medium">Belum ada data kue</p>
+                            <p className="text-sm text-gray-400">Silakan tambahkan data kue terlebih dahulu</p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-6">
+              <button 
+                type="submit" 
+                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 transition-all"
+                disabled={loading}
+              >
+                {loading ? "Menyimpan..." : "Simpan Stok Pagi"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
