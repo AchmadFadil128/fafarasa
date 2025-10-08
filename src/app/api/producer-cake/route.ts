@@ -3,6 +3,11 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface ProducerUpdateData {
+  name?: string;
+  isHidden?: boolean;
+}
+
 export async function GET() {
   // Ambil semua kue beserta produsen
   const cakes = await prisma.cake.findMany({
@@ -17,20 +22,28 @@ export async function GET() {
   return NextResponse.json({ cakes, producers });
 }
 
+interface ProducerCakePostData {
+  type: 'producer' | 'cake';
+  name?: string;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  producerId?: number;
+}
+
 export async function POST(req: NextRequest) {
-  const data = await req.json();
+  const data: ProducerCakePostData = await req.json();
   if (data.type === 'producer') {
     // Tambah produsen
-    const producer = await prisma.producer.create({ data: { name: data.name } });
+    const producer = await prisma.producer.create({ data: { name: data.name || '' } });
     return NextResponse.json(producer);
   } else if (data.type === 'cake') {
     // Tambah kue
     const cake = await prisma.cake.create({
       data: {
-        name: data.name,
-        purchasePrice: data.purchasePrice,
-        sellingPrice: data.sellingPrice,
-        producerId: data.producerId,
+        name: data.name || '',
+        purchasePrice: data.purchasePrice || 0,
+        sellingPrice: data.sellingPrice || 0,
+        producerId: data.producerId || 0,
       },
     });
     return NextResponse.json(cake);
@@ -42,7 +55,10 @@ export async function PUT(req: NextRequest) {
   const data = await req.json();
   if (data.type === 'producer') {
     // Edit produsen
-    const updateData: any = { name: data.name };
+    const updateData: ProducerUpdateData = {};
+    if (data.name !== undefined) {
+      updateData.name = data.name;
+    }
     if (data.isHidden !== undefined) {
       updateData.isHidden = data.isHidden;
     }
