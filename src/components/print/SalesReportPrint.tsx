@@ -149,6 +149,7 @@ export default function SalesReportPrint({
               </tr>
             </tbody>
           </table>
+          <p class="brand">Fafa Rasa</p>
         `;
       };
 
@@ -199,6 +200,16 @@ export default function SalesReportPrint({
                   page-break-after: always; 
                 }
 
+                .brand {
+                  font-weight: 700;
+                  font-size: 12px;
+                  letter-spacing: 0.5px;
+                  text-align: center;
+                  display: block;
+                  margin: 0 auto;
+                  padding-top: 5px;
+                }
+
                 .print-header {
                   text-align: center;
                   margin-bottom: 6px;
@@ -227,7 +238,7 @@ export default function SalesReportPrint({
                   grid-template-columns: repeat(2, 1fr);
                   grid-template-rows: repeat(4, 1fr);
                   gap: 3px;
-                  height: calc(100vh - 60px);
+                  // height: calc(100vh - 72px);
                 }
                 
                 .producer-card { 
