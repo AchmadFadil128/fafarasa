@@ -37,6 +37,8 @@ export default function StockIn() {
     const data = await res.json();
     // Filter out cakes from hidden producers
     const visibleCakes = data.cakes.filter((cake: Cake) => !cake.producer.isHidden);
+    // Sort by producer name A-Z
+    visibleCakes.sort((a: Cake, b: Cake) => a.producer.name.localeCompare(b.producer.name, 'id'));
     setCakes(visibleCakes);
   };
 

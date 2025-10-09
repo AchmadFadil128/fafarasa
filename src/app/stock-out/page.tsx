@@ -2,12 +2,21 @@
 import { useEffect, useState, useCallback } from "react";
 
 // Definisikan tipe data
+interface Producer {
+  id: number;
+  name: string;
+  isHidden: boolean;
+}
+
 interface DailyEntry {
   id: number;
   cakeId: number;
   initialStock: number;
   remainingStock: number | null;
-  cake: { name: string };
+  cake: { 
+    name: string;
+    producer: Producer;
+  };
 }
 
 interface DailyForm {
@@ -29,6 +38,8 @@ export default function StockOut() {
     const data: DailyEntry[] = await res.json();
     // Hanya tampilkan yang sudah ada stok awal
     const filteredData = data.filter(e => e.initialStock > 0);
+    // Sort by producer name A-Z
+    filteredData.sort((a, b) => a.cake.producer.name.localeCompare(b.cake.producer.name, 'id'));
     setEntries(filteredData);
     
     const formObj: DailyForm = {};
