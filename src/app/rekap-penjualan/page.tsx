@@ -171,7 +171,7 @@ export default function ProducerSalesSummary() {
             if (entry.initialStock !== null && entry.remainingStock !== null) {
               const kirim = entry.initialStock;
               const laku = entry.initialStock - entry.remainingStock;
-              const revenue = laku * entry.cake.sellingPrice;
+              const revenue = laku * entry.cake.purchasePrice;
               const profit = laku * (entry.cake.sellingPrice - entry.cake.purchasePrice);
 
               producer.dailyData[dateStr][cakeId] = { kirim, laku, revenue };
