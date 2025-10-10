@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from 'next-auth/react';
 
 // Definisikan tipe data untuk Producer
 interface Producer {
@@ -10,7 +9,6 @@ interface Producer {
 }
 
 export default function Producers() {
-  const { data: session } = useSession();
   const [producers, setProducers] = useState<Producer[]>([]);
   const [hiddenProducers, setHiddenProducers] = useState<Producer[]>([]);
   const [producerName, setProducerName] = useState("");
@@ -92,16 +90,6 @@ export default function Producers() {
 
   return (
     <div className="w-full max-w-5xl mx-auto py-4">
-      {/* Header with user info */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-green-700">Manajemen Produsen</h1>
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <p className="text-sm text-gray-600">Welcome, <span className="font-semibold">{session?.user?.username}</span></p>
-            <p className="text-xs text-gray-500">Role: {session?.user?.role}</p>
-          </div>
-        </div>
-      </div>
       
       <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
         {/* Header */}
