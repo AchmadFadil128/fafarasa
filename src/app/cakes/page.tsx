@@ -21,13 +21,20 @@ export default function Cakes() {
   const [cakes, setCakes] = useState<Cake[]>([]);
   const [hiddenCakes, setHiddenCakes] = useState<Cake[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
-  const [cakeForm, setCakeForm] = useState({
+  const [newCakeForm, setNewCakeForm] = useState({
+    name: "",
+    purchasePrice: "",
+    sellingPrice: "",
+    producerId: "",
+  });
+  const [editCakeForm, setEditCakeForm] = useState({
     id: null as number | null,
     name: "",
     purchasePrice: "",
     sellingPrice: "",
     producerId: "",
   });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -42,50 +49,63 @@ export default function Cakes() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const handleCakeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setCakeForm({ ...cakeForm, [e.target.name]: e.target.value });
+  const handleNewCakeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setNewCakeForm({ ...newCakeForm, [e.target.name]: e.target.value });
   };
 
-  const handleAddOrUpdateCake = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEditCakeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setEditCakeForm({ ...editCakeForm, [e.target.name]: e.target.value });
+  };
+
+  const handleAddCake = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const method = cakeForm.id ? "PUT" : "POST";
     const payload = {
       type: "cake",
-      id: cakeForm.id,
-      name: cakeForm.name,
-      purchasePrice: parseFloat(cakeForm.purchasePrice),
-      sellingPrice: parseFloat(cakeForm.sellingPrice),
-      producerId: parseInt(cakeForm.producerId),
+      name: newCakeForm.name,
+      purchasePrice: parseFloat(newCakeForm.purchasePrice),
+      sellingPrice: parseFloat(newCakeForm.sellingPrice),
+      producerId: parseInt(newCakeForm.producerId),
     };
     await fetch("/api/producer-cake", {
-      method,
+      method: "POST",
       body: JSON.stringify(payload),
     });
-    setCakeForm({ id: null, name: "", purchasePrice: "", sellingPrice: "", producerId: "" });
+    setNewCakeForm({ name: "", purchasePrice: "", sellingPrice: "", producerId: "" });
     fetchData();
   };
 
   const handleEditCake = (cake: Cake) => {
-    setCakeForm({
+    setEditCakeForm({
       id: cake.id,
       name: cake.name,
       purchasePrice: String(cake.purchasePrice),
       sellingPrice: String(cake.sellingPrice),
       producerId: String(cake.producerId),
     });
+    setIsEditModalOpen(true);
   };
 
-  const handleDeleteCake = async (id: number) => {
-    if (!confirm("Yakin hapus kue ini?")) return;
+  const handleUpdateCake = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editCakeForm.id) return;
     const res = await fetch("/api/producer-cake", {
-      method: "DELETE",
-      body: JSON.stringify({ type: "cake", id }),
+      method: "PUT",
+      body: JSON.stringify({
+        type: "cake",
+        id: editCakeForm.id,
+        name: editCakeForm.name,
+        purchasePrice: parseFloat(editCakeForm.purchasePrice),
+        sellingPrice: parseFloat(editCakeForm.sellingPrice),
+        producerId: parseInt(editCakeForm.producerId),
+      }),
     });
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      alert(errorData.error || "Gagal menghapus kue.");
+      alert(errorData.error || "Gagal mengupdate kue.");
       return;
     }
+    setIsEditModalOpen(false);
+    setEditCakeForm({ id: null, name: "", purchasePrice: "", sellingPrice: "", producerId: "" });
     fetchData();
   };
 
@@ -132,7 +152,7 @@ export default function Cakes() {
                 <h2 className="air-section-title">
                   Manajemen Kue
                 </h2>
-                <p className="air-subtitle mt-1">Tambah, edit, hapus, atau sembunyikan data kue</p>
+                <p className="air-subtitle mt-1">Tambah, edit, atau sembunyikan data kue</p>
               </div>
             </div>
           </div>
@@ -140,7 +160,7 @@ export default function Cakes() {
 
         {/* Content */}
         <div className="p-6">
-          <form onSubmit={handleAddOrUpdateCake} className="mb-6 bg-white/50 p-4 rounded-xl border border-white/30 backdrop-blur-sm">
+          <form onSubmit={handleAddCake} className="mb-6 bg-white/50 p-4 rounded-xl border border-white/30 backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label htmlFor="name" className="block air-label mb-1">Nama Kue</label>
@@ -150,8 +170,8 @@ export default function Cakes() {
                   name="name"
                   className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Nama kue"
-                  value={cakeForm.name}
-                  onChange={handleCakeFormChange}
+                  value={newCakeForm.name}
+                  onChange={handleNewCakeFormChange}
                   required
                 />
               </div>
@@ -161,8 +181,8 @@ export default function Cakes() {
                   id="producerId"
                   name="producerId"
                   className="air-select w-full px-3 py-2 focus:outline-none"
-                  value={cakeForm.producerId}
-                  onChange={handleCakeFormChange}
+                  value={newCakeForm.producerId}
+                  onChange={handleNewCakeFormChange}
                   required
                 >
                   <option value="">Pilih produsen</option>
@@ -179,8 +199,8 @@ export default function Cakes() {
                   name="purchasePrice"
                   className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Harga beli"
-                  value={cakeForm.purchasePrice}
-                  onChange={handleCakeFormChange}
+                  value={newCakeForm.purchasePrice}
+                  onChange={handleNewCakeFormChange}
                   required
                 />
               </div>
@@ -192,21 +212,16 @@ export default function Cakes() {
                   name="sellingPrice"
                   className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Harga jual"
-                  value={cakeForm.sellingPrice}
-                  onChange={handleCakeFormChange}
+                  value={newCakeForm.sellingPrice}
+                  onChange={handleNewCakeFormChange}
                   required
                 />
               </div>
             </div>
             <div className="flex gap-2 mt-2">
               <button type="submit" className="air-btn-primary px-6 py-2 focus:outline-none transition-all">
-                {cakeForm.id ? "Update" : "Tambah"}
+                Tambah
               </button>
-              {cakeForm.id && (
-                <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all" onClick={() => setCakeForm({ id: null, name: "", purchasePrice: "", sellingPrice: "", producerId: "" })}>
-                  Batal
-                </button>
-              )}
             </div>
           </form>
           
@@ -237,7 +252,6 @@ export default function Cakes() {
                       <td className="px-6 py-4 flex gap-2">
                         <button className="text-[#ff385c] hover:text-[#e00b41] font-medium" onClick={() => handleEditCake(c)}>Edit</button>
                         <button className="text-amber-600 hover:text-amber-800 font-medium" onClick={() => handleHideCake(c.id)}>Sembunyikan</button>
-                        <button className="text-red-600 hover:text-red-800 font-medium" onClick={() => handleDeleteCake(c.id)}>Hapus</button>
                       </td>
                     </tr>
                   ))}
@@ -303,6 +317,84 @@ export default function Cakes() {
           {loading && <div className="text-center mt-4">Memuat data...</div>}
         </div>
       </div>
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="air-card w-full max-w-xl p-6">
+            <div className="mb-4">
+              <h3 className="air-card-title">Edit Kue</h3>
+              <p className="air-subtitle mt-1">Ubah detail kue lalu simpan perubahan.</p>
+            </div>
+            <form onSubmit={handleUpdateCake}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="edit-name" className="block air-label mb-1">Nama Kue</label>
+                  <input
+                    id="edit-name"
+                    type="text"
+                    name="name"
+                    className="air-input w-full px-3 py-2 focus:outline-none"
+                    value={editCakeForm.name}
+                    onChange={handleEditCakeFormChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="edit-producerId" className="block air-label mb-1">Produsen</label>
+                  <select
+                    id="edit-producerId"
+                    name="producerId"
+                    className="air-select w-full px-3 py-2 focus:outline-none"
+                    value={editCakeForm.producerId}
+                    onChange={handleEditCakeFormChange}
+                    required
+                  >
+                    <option value="">Pilih produsen</option>
+                    {producers.map((p) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="edit-purchasePrice" className="block air-label mb-1">Harga Beli</label>
+                  <input
+                    id="edit-purchasePrice"
+                    type="number"
+                    name="purchasePrice"
+                    className="air-input w-full px-3 py-2 focus:outline-none"
+                    value={editCakeForm.purchasePrice}
+                    onChange={handleEditCakeFormChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="edit-sellingPrice" className="block air-label mb-1">Harga Jual</label>
+                  <input
+                    id="edit-sellingPrice"
+                    type="number"
+                    name="sellingPrice"
+                    className="air-input w-full px-3 py-2 focus:outline-none"
+                    value={editCakeForm.sellingPrice}
+                    onChange={handleEditCakeFormChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="air-btn-secondary px-4 py-2"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Batal
+                </button>
+                <button type="submit" className="air-btn-primary px-6 py-2">
+                  Simpan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
