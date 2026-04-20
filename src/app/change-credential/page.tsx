@@ -102,17 +102,17 @@ export default function ChangeAdminCredentialsPage() {
   return (
     <div className="w-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="backdrop-blur-xl bg-white/80 border border-white/20 rounded-2xl shadow-2xl shadow-green-500/10 p-8">
+        <div className="air-card p-8">
           <div className="flex flex-col items-center text-center space-y-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-[#ff385c] rounded-full flex items-center justify-center">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] tracking-[-0.18px]">
               Ubah Kredensial Admin
             </h2>
-            <p className="text-sm text-gray-500">Masukkan kredensial lama dan baru untuk mengubah akun admin</p>
+            <p className="text-sm text-[#6a6a6a]">Masukkan kredensial lama dan baru untuk mengubah akun admin</p>
           </div>
 
           <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
@@ -130,7 +130,7 @@ export default function ChangeAdminCredentialsPage() {
                   name="currentUsername"
                   type="text"
                   required
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                  className="air-input appearance-none block w-full px-3 py-2 placeholder-gray-500 sm:text-sm"
                   placeholder="Username saat ini"
                   value={currentUsername}
                   onChange={(e) => setCurrentUsername(e.target.value)}
@@ -145,7 +145,7 @@ export default function ChangeAdminCredentialsPage() {
                   name="currentPassword"
                   type="password"
                   required
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                  className="air-input appearance-none block w-full px-3 py-2 placeholder-gray-500 sm:text-sm"
                   placeholder="Password saat ini"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
@@ -167,7 +167,7 @@ export default function ChangeAdminCredentialsPage() {
                   name="newUsername"
                   type="text"
                   required
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                  className="air-input appearance-none block w-full px-3 py-2 placeholder-gray-500 sm:text-sm"
                   placeholder="Username baru"
                   value={newUsername}
                   onChange={(e) => setNewUsername(e.target.value)}
@@ -183,7 +183,7 @@ export default function ChangeAdminCredentialsPage() {
                   type="password"
                   required
                   minLength={6}
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                  className="air-input appearance-none block w-full px-3 py-2 placeholder-gray-500 sm:text-sm"
                   placeholder="Password baru (minimal 6 karakter)"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -199,7 +199,7 @@ export default function ChangeAdminCredentialsPage() {
                   type="password"
                   required
                   minLength={6}
-                  className="appearance-none block w-full px-3 py-2 rounded-xl border border-green-100 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm bg-white/70"
+                  className="air-input appearance-none block w-full px-3 py-2 placeholder-gray-500 sm:text-sm"
                   placeholder="Konfirmasi password baru"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -220,11 +220,11 @@ export default function ChangeAdminCredentialsPage() {
 
             {/* Success Message */}
             {success && (
-              <div className="rounded-xl bg-green-50/90 border border-green-200 p-4">
+              <div className="rounded-xl bg-[#f2f2f2] border border-[#ececec] p-4">
                 <div className="flex">
                   <div className="ml-1">
-                    <h3 className="text-sm font-medium text-green-800">{success}</h3>
-                    <p className="text-xs text-green-600 mt-1">Anda akan dialihkan ke halaman login...</p>
+                    <h3 className="text-sm font-medium text-[#222222]">{success}</h3>
+                    <p className="text-xs text-[#6a6a6a] mt-1">Anda akan dialihkan ke halaman login...</p>
                   </div>
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function ChangeAdminCredentialsPage() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="flex-1 flex justify-center py-2.5 px-4 text-sm font-medium rounded-xl text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                className="air-btn-secondary flex-1 flex justify-center py-2.5 px-4 text-sm font-medium focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 Batal
@@ -243,7 +243,7 @@ export default function ChangeAdminCredentialsPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 flex justify-center py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                className="air-btn-primary flex-1 flex justify-center py-2.5 px-4 text-sm font-medium focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Memproses..." : "Ubah Kredensial"}
               </button>

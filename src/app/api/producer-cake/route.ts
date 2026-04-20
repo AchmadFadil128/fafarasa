@@ -8,13 +8,22 @@ interface ProducerUpdateData {
   isHidden?: boolean;
 }
 
-export async function GET() {
-  // Ambil semua kue beserta produsen
+interface CakeUpdateData {
+  name?: string;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  producerId?: number;
+  isHidden?: boolean;
+}
+
+export async function GET(req: NextRequest) {
+  const includeHidden = req.nextUrl.searchParams.get('includeHidden') === 'true';
+
   const cakes = await prisma.cake.findMany({
+    where: includeHidden ? undefined : { isHidden: false },
     include: { producer: true },
     orderBy: { id: 'asc' },
   });
-  // Ambil hanya produsen yang tidak disembunyikan
   const producers = await prisma.producer.findMany({ 
     where: { isHidden: false }, 
     orderBy: { id: 'asc' } 
@@ -69,15 +78,26 @@ export async function PUT(req: NextRequest) {
     });
     return NextResponse.json(producer);
   } else if (data.type === 'cake') {
-    // Edit kue
+    const updateData: CakeUpdateData = {};
+    if (data.name !== undefined) {
+      updateData.name = data.name;
+    }
+    if (data.purchasePrice !== undefined) {
+      updateData.purchasePrice = data.purchasePrice;
+    }
+    if (data.sellingPrice !== undefined) {
+      updateData.sellingPrice = data.sellingPrice;
+    }
+    if (data.producerId !== undefined) {
+      updateData.producerId = data.producerId;
+    }
+    if (data.isHidden !== undefined) {
+      updateData.isHidden = data.isHidden;
+    }
+
     const cake = await prisma.cake.update({
       where: { id: data.id },
-      data: {
-        name: data.name,
-        purchasePrice: data.purchasePrice,
-        sellingPrice: data.sellingPrice,
-        producerId: data.producerId,
-      },
+      data: updateData,
     });
     return NextResponse.json(cake);
   }
@@ -94,9 +114,22 @@ export async function DELETE(req: NextRequest) {
     });
     return NextResponse.json(producer);
   } else if (data.type === 'cake') {
-    // Hapus kue
-    await prisma.cake.delete({ where: { id: data.id } });
-    return NextResponse.json({ success: true });
+    try {
+      await prisma.cake.delete({ where: { id: data.id } });
+      return NextResponse.json({ success: true });
+    } catch (error: unknown) {
+      const err = error as { code?: string };
+      if (err?.code === 'P2003') {
+        return NextResponse.json(
+          {
+            error:
+              'Kue tidak bisa dihapus karena sudah dipakai pada data stok/penjualan. Hapus data terkait terlebih dahulu.',
+          },
+          { status: 409 }
+        );
+      }
+      throw error;
+    }
   }
   return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
 } 

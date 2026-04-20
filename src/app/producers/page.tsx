@@ -90,22 +90,21 @@ export default function Producers() {
 
   return (
     <div className="w-full max-w-5xl mx-auto py-4">
-      
-      <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
+      <div className="air-card overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-6 py-6">
+        <div className="air-header px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-[#ff385c] rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
                   Form Manajemen Produsen
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Tambah, edit, atau sembunyikan produsen</p>
+                <p className="text-sm text-[#6a6a6a] mt-1">Tambah, edit, atau sembunyikan produsen</p>
               </div>
             </div>
           </div>
@@ -116,14 +115,14 @@ export default function Producers() {
           <form onSubmit={editProducer ? handleUpdateProducer : handleAddProducer} className="flex flex-col sm:flex-row gap-3 mb-6">
             <input
               type="text"
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="air-input flex-1 px-3 py-2 focus:outline-none"
               placeholder="Nama produsen"
               value={editProducer ? editProducerName : producerName}
               onChange={e => editProducer ? setEditProducerName(e.target.value) : setProducerName(e.target.value)}
               required
             />
             <div className="flex gap-2">
-              <button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
+              <button type="submit" className="air-btn-primary px-6 py-2 focus:outline-none transition-all">
                 {editProducer ? "Update" : "Tambah"}
               </button>
               {editProducer && (
@@ -142,7 +141,7 @@ export default function Producers() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Produsen Aktif</h3>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="air-pill px-3 py-1 text-sm font-medium">
                 {producers.length} Produsen
               </span>
             </div>
@@ -160,14 +159,14 @@ export default function Producers() {
                   {producers.map((p, i) => (
                     <tr 
                       key={p.id}
-                      className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
+                      className="group hover:bg-[#fcfcfc] transition-all duration-300"
                     >
                       <td className="px-6 py-4 font-medium text-gray-900">{i + 1}</td>
                       <td className="px-6 py-4 font-medium text-gray-900">{p.name}</td>
                       <td className="px-6 py-4">
                         <div className="flex gap-3">
                           <button 
-                            className="text-green-600 hover:text-green-800 font-medium"
+                            className="text-[#ff385c] hover:text-[#e00b41] font-medium"
                             onClick={() => handleEditProducer(p)}
                           >
                             Edit

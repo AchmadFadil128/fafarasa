@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111827;
+  --palette-bg-primary-core: #ff385c;
+  --palette-bg-tertiary-core: #e00b41;
+  --palette-bg-surface: #ffffff;
+  --palette-bg-muted: #f2f2f2;
+  --palette-text-primary: #222222;
+  --palette-text-secondary: #6a6a6a;
+  --palette-text-error: #c13515;
+  --palette-border: #c1c1c1;
+  --palette-ring: rgba(34, 34, 34, 0.22);
+  --surface-shadow: rgba(0, 0, 0, 0.02) 0px 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 2px 6px,
+    rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  --hover-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+  --background: var(--palette-bg-surface);
+  --foreground: var(--palette-text-primary);
 }
 
 @theme inline {
@@ -15,5 +27,88 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
+}
+
+main {
+  color: var(--palette-text-primary);
+}
+
+.air-card {
+  background: var(--palette-bg-surface);
+  border-radius: 20px;
+  box-shadow: var(--surface-shadow);
+}
+
+.air-header {
+  border-bottom: 1px solid #ececec;
+  background: #fff;
+}
+
+.air-pill {
+  border-radius: 999px;
+  background: var(--palette-bg-muted);
+  color: var(--palette-text-primary);
+}
+
+.air-input,
+.air-select {
+  border: 1px solid #dddddd;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--palette-text-primary);
+}
+
+.air-input:focus,
+.air-select:focus {
+  outline: none;
+  border-color: var(--palette-bg-primary-core);
+  box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.22);
+}
+
+.air-btn-primary {
+  border-radius: 8px;
+  background: var(--palette-text-primary);
+  color: #fff;
+  transition: all 180ms ease;
+}
+
+.air-btn-primary:hover {
+  background: var(--palette-bg-primary-core);
+  box-shadow: var(--hover-shadow);
+}
+
+.air-btn-secondary {
+  border-radius: 8px;
+  background: var(--palette-bg-muted);
+  color: var(--palette-text-primary);
+}
+
+.air-btn-secondary:hover {
+  box-shadow: var(--hover-shadow);
+}
+
+.air-table thead tr {
+  background: #fbfbfb;
+}
+
+.air-table th {
+  color: var(--palette-text-secondary);
+  font-weight: 600;
+}
+
+.air-table tbody tr:hover {
+  background: #fcfcfc;
+}
+
+.air-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.18px;
+  color: var(--palette-text-primary);
+}
+
+.air-subtitle {
+  font-size: 0.875rem;
+  color: var(--palette-text-secondary);
 }

@@ -220,7 +220,7 @@ export default function ProducerSalesSummary() {
 
   return (
     <div className="w-full max-w-7xl mx-auto py-4 px-4">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-green-700">
+      <h1 className="air-title mb-6">
         Rangkuman Penjualan per Producer
       </h1>
 
@@ -231,7 +231,7 @@ export default function ProducerSalesSummary() {
           <select
             value={selectedWeek}
             onChange={(e) => setSelectedWeek(e.target.value)}
-            className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="air-select appearance-none bg-white px-4 py-2 pr-8 focus:outline-none"
           >
             <option value="">Pilih Minggu</option>
             {weekOptions.map(option => (
@@ -251,7 +251,7 @@ export default function ProducerSalesSummary() {
             placeholder="Cari producer atau kue..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="air-input w-full pl-10 pr-4 py-2 focus:outline-none"
           />
         </div>
 
@@ -259,7 +259,7 @@ export default function ProducerSalesSummary() {
         <button
           onClick={() => setShowPrintModal(true)}
           disabled={loading || filteredData.length === 0}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className="air-btn-primary flex items-center gap-2 px-4 py-2 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
           <Printer className="w-4 h-4" />
           Cetak Laporan
@@ -268,8 +268,8 @@ export default function ProducerSalesSummary() {
 
       {/* Period Info */}
       {selectedWeekOption && (
-        <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
-          <p className="text-green-700 font-medium">
+        <div className="mb-4 p-3 bg-[#f9f9f9] rounded-lg border border-[#ececec]">
+          <p className="text-[#222222] font-medium">
             Periode: {selectedWeekOption.label}
           </p>
         </div>
@@ -293,9 +293,9 @@ export default function ProducerSalesSummary() {
             </div>
           ) : (
             filteredData.map(producer => (
-              <div key={producer.id} className="bg-white rounded-lg shadow-lg border border-green-100 overflow-hidden">
+              <div key={producer.id} className="air-card overflow-hidden">
                 {/* Producer Header */}
-                <div className="bg-green-700 text-white px-4 py-3">
+                <div className="bg-[#222222] text-white px-4 py-3">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">Nama: {producer.name}</h3>
                     <div className="text-right">
@@ -314,7 +314,7 @@ export default function ProducerSalesSummary() {
                         {producer.cakes.map(cake => (
                           <th key={cake.id} className="border border-gray-300 px-3 py-2 text-center" colSpan={2}>
                             <div>{cake.name}</div>
-                            <div className="text-xs font-semibold text-green-700 mt-1">
+                            <div className="text-xs font-semibold text-[#ff385c] mt-1">
                               (Total: {formatCurrency(cake.revenue)})
                             </div>
                           </th>
@@ -360,7 +360,7 @@ export default function ProducerSalesSummary() {
                       })()}
 
                       {/* Total Row */}
-                      <tr className="bg-green-50 font-semibold">
+                      <tr className="bg-[#fafafa] font-semibold">
                         <td className="border border-gray-300 px-3 py-2">Total</td>
                         {producer.cakes.map(cake => [
                           <td key={`${cake.id}-total-kirim`} className="border border-gray-300 px-2 py-1 text-center">
@@ -380,11 +380,11 @@ export default function ProducerSalesSummary() {
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="font-medium text-gray-700">Total Kirim Minggu Ini:</span>
-                      <span className="ml-2 font-bold text-green-700">{producer.weeklyKirim}</span>
+                      <span className="ml-2 font-bold text-[#222222]">{producer.weeklyKirim}</span>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Total Laku Minggu Ini:</span>
-                      <span className="ml-2 font-bold text-green-700">{producer.weeklyLaku}</span>
+                      <span className="ml-2 font-bold text-[#222222]">{producer.weeklyLaku}</span>
                     </div>
                   </div>
                 </div>

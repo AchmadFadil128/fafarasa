@@ -37,6 +37,7 @@ model Cake {
   name          String
   purchasePrice Float
   sellingPrice  Float
+  isHidden      Boolean  @default(false)
   producer      Producer @relation(fields: [producerId], references: [id])
   producerId    Int
   dailyEntries  DailyEntry[]

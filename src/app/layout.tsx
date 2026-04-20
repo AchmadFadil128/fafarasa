@@ -9,7 +9,7 @@ export { metadata };
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id">
-      <body className="antialiased bg-gradient-to-br from-green-50 via-white to-emerald-50 text-gray-900 min-h-screen">
+      <body className="antialiased bg-white text-[#222222] min-h-screen">
         <Providers>
           <ClientLayout>{children}</ClientLayout>
         </Providers>

@@ -13,11 +13,13 @@ interface Cake {
   purchasePrice: number;
   sellingPrice: number;
   producerId: number;
+  isHidden: boolean;
   producer?: Producer;
 }
 
 export default function Cakes() {
   const [cakes, setCakes] = useState<Cake[]>([]);
+  const [hiddenCakes, setHiddenCakes] = useState<Cake[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
   const [cakeForm, setCakeForm] = useState({
     id: null as number | null,
@@ -30,9 +32,10 @@ export default function Cakes() {
 
   const fetchData = async () => {
     setLoading(true);
-    const res = await fetch("/api/producer-cake");
+    const res = await fetch("/api/producer-cake?includeHidden=true");
     const data = await res.json();
-    setCakes(data.cakes);
+    setCakes(data.cakes.filter((cake: Cake) => !cake.isHidden));
+    setHiddenCakes(data.cakes.filter((cake: Cake) => cake.isHidden));
     setProducers(data.producers);
     setLoading(false);
   };
@@ -74,30 +77,62 @@ export default function Cakes() {
 
   const handleDeleteCake = async (id: number) => {
     if (!confirm("Yakin hapus kue ini?")) return;
-    await fetch("/api/producer-cake", {
+    const res = await fetch("/api/producer-cake", {
       method: "DELETE",
       body: JSON.stringify({ type: "cake", id }),
     });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      alert(errorData.error || "Gagal menghapus kue.");
+      return;
+    }
+    fetchData();
+  };
+
+  const handleHideCake = async (id: number) => {
+    if (!confirm("Yakin sembunyikan kue ini?")) return;
+    const res = await fetch("/api/producer-cake", {
+      method: "PUT",
+      body: JSON.stringify({ type: "cake", id, isHidden: true }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      alert(errorData.error || "Gagal menyembunyikan kue.");
+      return;
+    }
+    fetchData();
+  };
+
+  const handleUnhideCake = async (id: number) => {
+    const res = await fetch("/api/producer-cake", {
+      method: "PUT",
+      body: JSON.stringify({ type: "cake", id, isHidden: false }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      alert(errorData.error || "Gagal menampilkan kue.");
+      return;
+    }
     fetchData();
   };
 
   return (
     <div className="w-full max-w-5xl mx-auto py-4">
-      <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
+      <div className="air-card overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-6 py-6">
+        <div className="air-header px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-[#ff385c] rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
                   Manajemen Kue
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Tambah, edit, atau hapus data kue</p>
+                <p className="text-sm text-gray-500 mt-1">Tambah, edit, hapus, atau sembunyikan data kue</p>
               </div>
             </div>
           </div>
@@ -113,7 +148,7 @@ export default function Cakes() {
                   id="name"
                   type="text"
                   name="name"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Nama kue"
                   value={cakeForm.name}
                   onChange={handleCakeFormChange}
@@ -125,7 +160,7 @@ export default function Cakes() {
                 <select
                   id="producerId"
                   name="producerId"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="air-select w-full px-3 py-2 focus:outline-none"
                   value={cakeForm.producerId}
                   onChange={handleCakeFormChange}
                   required
@@ -142,7 +177,7 @@ export default function Cakes() {
                   id="purchasePrice"
                   type="number"
                   name="purchasePrice"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Harga beli"
                   value={cakeForm.purchasePrice}
                   onChange={handleCakeFormChange}
@@ -155,7 +190,7 @@ export default function Cakes() {
                   id="sellingPrice"
                   type="number"
                   name="sellingPrice"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="air-input w-full px-3 py-2 focus:outline-none"
                   placeholder="Harga jual"
                   value={cakeForm.sellingPrice}
                   onChange={handleCakeFormChange}
@@ -164,7 +199,7 @@ export default function Cakes() {
               </div>
             </div>
             <div className="flex gap-2 mt-2">
-              <button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
+              <button type="submit" className="air-btn-primary px-6 py-2 focus:outline-none transition-all">
                 {cakeForm.id ? "Update" : "Tambah"}
               </button>
               {cakeForm.id && (
@@ -193,14 +228,15 @@ export default function Cakes() {
                   .slice()
                   .sort((a, b) => (a.producer?.name || '').localeCompare(b.producer?.name || ''))
                   .map((c, i) => (
-                    <tr key={c.id} className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300">
+                    <tr key={c.id} className="group hover:bg-[#fcfcfc] transition-all duration-300">
                       <td className="px-6 py-4">{i + 1}</td>
                       <td className="px-6 py-4 font-medium text-gray-900">{c.name}</td>
                       <td className="px-6 py-4 text-gray-700">{c.producer?.name}</td>
                       <td className="px-6 py-4">Rp{c.purchasePrice.toLocaleString()}</td>
                       <td className="px-6 py-4">Rp{c.sellingPrice.toLocaleString()}</td>
                       <td className="px-6 py-4 flex gap-2">
-                        <button className="text-green-600 hover:text-green-800 font-medium" onClick={() => handleEditCake(c)}>Edit</button>
+                        <button className="text-[#ff385c] hover:text-[#e00b41] font-medium" onClick={() => handleEditCake(c)}>Edit</button>
+                        <button className="text-amber-600 hover:text-amber-800 font-medium" onClick={() => handleHideCake(c.id)}>Sembunyikan</button>
                         <button className="text-red-600 hover:text-red-800 font-medium" onClick={() => handleDeleteCake(c.id)}>Hapus</button>
                       </td>
                     </tr>
@@ -225,6 +261,45 @@ export default function Cakes() {
               </tbody>
             </table>
           </div>
+          {hiddenCakes.length > 0 && (
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg text-gray-700">Kue Tersembunyi</h3>
+                <span className="air-pill px-3 py-1 text-sm font-medium">{hiddenCakes.length} Kue</span>
+              </div>
+              <div className="overflow-x-auto rounded-xl border border-gray-200/30">
+                <table className="w-full">
+                  <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
+                    <tr>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">#</th>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">Nama</th>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">Produsen</th>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">Harga Beli</th>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">Harga Jual</th>
+                      <th className="text-left px-6 py-4 font-semibold text-gray-700">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200/30">
+                    {hiddenCakes
+                      .slice()
+                      .sort((a, b) => (a.producer?.name || '').localeCompare(b.producer?.name || ''))
+                      .map((c, i) => (
+                        <tr key={c.id} className="group hover:bg-[#fcfcfc] transition-all duration-300">
+                          <td className="px-6 py-4">{i + 1}</td>
+                          <td className="px-6 py-4 font-medium text-gray-500 line-through">{c.name}</td>
+                          <td className="px-6 py-4 text-gray-500">{c.producer?.name}</td>
+                          <td className="px-6 py-4 text-gray-500">Rp{c.purchasePrice.toLocaleString()}</td>
+                          <td className="px-6 py-4 text-gray-500">Rp{c.sellingPrice.toLocaleString()}</td>
+                          <td className="px-6 py-4">
+                            <button className="text-blue-600 hover:text-blue-800 font-medium" onClick={() => handleUnhideCake(c.id)}>Tampilkan</button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           {loading && <div className="text-center mt-4">Memuat data...</div>}
         </div>
       </div>

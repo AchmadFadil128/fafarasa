@@ -95,24 +95,24 @@ export default function StockOut() {
   return (
     <div className="w-full max-w-5xl mx-auto py-2 sm:py-4 px-2 sm:px-4">
       
-      <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-xl sm:rounded-2xl overflow-hidden">
+      <div className="air-card rounded-xl sm:rounded-2xl overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-3 sm:px-6 py-3 sm:py-6">
+        <div className="air-header px-3 sm:px-6 py-3 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-[#ff385c] rounded-full flex items-center justify-center">
                 <svg className="w-4 h-4 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                <h2 className="text-lg sm:text-xl font-bold text-[#222222] tracking-[-0.18px]">
                   Form Input Stok Sore
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">Masukkan jumlah sisa stok untuk setiap jenis kue</p>
               </div>
             </div>
-            <div className="bg-green-100 text-green-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium self-start sm:self-auto">
+            <div className="air-pill px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium self-start sm:self-auto">
               Tanggal: {new Date(selectedDate).toLocaleDateString('id-ID')}
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function StockOut() {
               type="date"
               value={selectedDate}
               onChange={e => setSelectedDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="air-input px-2 sm:px-3 py-1 sm:py-2 text-sm focus:outline-none"
             />
           </div>
           <form onSubmit={handleSubmit}>
@@ -144,7 +144,7 @@ export default function StockOut() {
                   {entries.map((entry, idx) => (
                     <tr 
                       key={entry.id}
-                      className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
+                      className="group hover:bg-[#fcfcfc] transition-all duration-300"
                     >
                       <td className="px-2 sm:px-6 py-2 sm:py-4 font-medium text-gray-900 text-xs sm:text-sm">{entry.cake.name}</td>
                       <td className="px-2 sm:px-6 py-2 sm:py-4 text-gray-700 text-xs sm:text-sm">{entry.initialStock}</td>
@@ -152,7 +152,7 @@ export default function StockOut() {
                         <input
                           type="number"
                           min="0"
-                          className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-2 w-20 sm:w-32 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          className="air-input px-2 sm:px-3 py-1 sm:py-2 w-20 sm:w-32 text-xs sm:text-sm focus:outline-none"
                           value={dailyForm[entry.cakeId]?.remainingStock ?? ""}
                           onChange={e => handleInputChange(entry.cakeId, e.target.value)}
                           onKeyDown={e => handleInputEnter(e, idx)}
@@ -185,7 +185,7 @@ export default function StockOut() {
             <div className="mt-4 sm:mt-6">
               <button 
                 type="submit" 
-                className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 transition-all text-sm sm:text-base"
+                className="air-btn-primary w-full sm:w-auto px-4 sm:px-6 py-2 focus:outline-none disabled:opacity-50 transition-all text-sm sm:text-base"
                 disabled={loading}
               >
                 {loading ? "Menyimpan..." : "Simpan Stok Sore"}

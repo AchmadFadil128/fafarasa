@@ -130,7 +130,7 @@ export default function Dashboard() {
     <div className="w-full max-w-5xl mx-auto py-4">
       {/* Header with user info and logout */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-green-700">Dashboard Performa & Keuntungan</h1>
+        <h1 className="air-title">Dashboard Performa & Keuntungan</h1>
         <div className="flex items-center space-x-4">
           <div className="text-right">
             <p className="text-sm text-gray-600">Welcome, <span className="font-semibold">{session?.user?.username}</span></p>
@@ -141,14 +141,14 @@ export default function Dashboard() {
       
       {/* Filter Buttons */}
       <div className="flex justify-center gap-2 mb-6">
-        <button onClick={() => setFilter('daily')} className={`px-4 py-1 rounded ${filter === 'daily' ? 'bg-green-700 text-white' : 'bg-gray-200'}`}>Harian</button>
-        <button onClick={() => setFilter('weekly')} className={`px-4 py-1 rounded ${filter === 'weekly' ? 'bg-green-700 text-white' : 'bg-gray-200'}`}>Mingguan</button>
-        <button onClick={() => setFilter('monthly')} className={`px-4 py-1 rounded ${filter === 'monthly' ? 'bg-green-700 text-white' : 'bg-gray-200'}`}>Bulanan</button>
+        <button onClick={() => setFilter('daily')} className={`px-4 py-1 rounded-full ${filter === 'daily' ? 'bg-[#222222] text-white' : 'bg-[#f2f2f2]'}`}>Harian</button>
+        <button onClick={() => setFilter('weekly')} className={`px-4 py-1 rounded-full ${filter === 'weekly' ? 'bg-[#222222] text-white' : 'bg-[#f2f2f2]'}`}>Mingguan</button>
+        <button onClick={() => setFilter('monthly')} className={`px-4 py-1 rounded-full ${filter === 'monthly' ? 'bg-[#222222] text-white' : 'bg-[#f2f2f2]'}`}>Bulanan</button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow p-4 border border-green-100">
-          <h2 className="text-base font-semibold mb-2 text-green-700">Grafik Penjualan (Kue Terjual per Hari)</h2>
+        <div className="air-card p-4">
+          <h2 className="text-base font-semibold mb-2 text-[#222222]">Grafik Penjualan (Kue Terjual per Hari)</h2>
           <div style={{ height: '220px' }}>
             <Bar
               data={{
@@ -157,7 +157,7 @@ export default function Dashboard() {
                   {
                     label: 'Kue Terjual',
                     data: chartData.sales,
-                    backgroundColor: 'rgba(34,197,94,0.7)',
+                    backgroundColor: 'rgba(255,56,92,0.72)',
                     borderRadius: 6,
                   },
                 ],
@@ -176,8 +176,8 @@ export default function Dashboard() {
             />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 border border-green-100">
-          <h2 className="text-base font-semibold mb-2 text-green-700">Grafik Keuntungan (Rp per Hari)</h2>
+        <div className="air-card p-4">
+          <h2 className="text-base font-semibold mb-2 text-[#222222]">Grafik Keuntungan (Rp per Hari)</h2>
           <div style={{ height: '220px' }}>
             <Line
               data={{
@@ -186,8 +186,8 @@ export default function Dashboard() {
                   {
                     label: 'Keuntungan',
                     data: chartData.profits,
-                    borderColor: 'rgba(34,197,94,1)',
-                    backgroundColor: 'rgba(34,197,94,0.2)',
+                    borderColor: 'rgba(255,56,92,1)',
+                    backgroundColor: 'rgba(255,56,92,0.2)',
                     tension: 0.3,
                     fill: true,
                     pointRadius: 3,
@@ -221,24 +221,24 @@ export default function Dashboard() {
       </div>
       {/* Modern Laporan Table */}
 <div className="mt-8 space-y-6">
-  <div className="backdrop-blur-xl bg-white/80 border border-white/20 shadow-2xl shadow-green-500/10 rounded-2xl overflow-hidden">
+  <div className="air-card overflow-hidden">
     {/* Header */}
-    <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-b border-white/20 px-6 py-6">
+    <div className="air-header px-6 py-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-[#ff385c] rounded-full flex items-center justify-center">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
               Laporan Penjualan & Keuntungan
             </h2>
             <p className="text-sm text-gray-500 mt-1">Data performa bisnis terkini</p>
           </div>
         </div>
-        <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+        <div className="air-pill px-3 py-1 text-sm font-medium">
           {tableData.length} Periode
         </div>
       </div>
@@ -280,12 +280,12 @@ export default function Dashboard() {
             tableData.map(item => (
               <tr 
                 key={item.period}
-                className="group hover:bg-gradient-to-r hover:from-green-50/50 hover:to-emerald-50/50 transition-all duration-300"
+                className="group hover:bg-[#fcfcfc] transition-all duration-300"
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center group-hover:from-green-200 group-hover:to-emerald-200 transition-colors">
-                      <span className="text-sm font-semibold text-green-700">
+                    <div className="w-10 h-10 bg-[#f2f2f2] rounded-lg flex items-center justify-center transition-colors">
+                      <span className="text-sm font-semibold text-[#222222]">
                         {item.period.split('-')[1] || item.period.slice(-2)}
                       </span>
                     </div>
@@ -303,7 +303,7 @@ export default function Dashboard() {
                       </p>
                       <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                         <div 
-                          className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+                          className="bg-[#ff385c] h-2 rounded-full transition-all duration-500"
                           style={{ 
                             width: `${Math.min((item.sold / Math.max(...tableData.map(d => d.sold))) * 100, 100)}%` 
                           }}
@@ -344,21 +344,21 @@ export default function Dashboard() {
 
     {/* Summary Footer */}
     {tableData.length > 0 && (
-      <div className="bg-gradient-to-r from-green-50/80 to-emerald-50/80 border-t border-white/20 px-6 py-4">
+      <div className="bg-[#fafafa] border-t border-[#ececec] px-6 py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center">
             <p className="text-sm text-gray-500">Total Periode</p>
-            <p className="text-2xl font-bold text-green-700">{tableData.length}</p>
+            <p className="text-2xl font-bold text-[#222222]">{tableData.length}</p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-500">Total Kue Terjual</p>
-            <p className="text-2xl font-bold text-green-700">
+            <p className="text-2xl font-bold text-[#222222]">
               {tableData.reduce((sum, item) => sum + item.sold, 0).toLocaleString()}
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-500">Total Keuntungan</p>
-            <p className="text-2xl font-bold text-green-700">
+            <p className="text-2xl font-bold text-[#222222]">
               Rp {tableData.reduce((sum, item) => sum + item.profit, 0).toLocaleString()}
             </p>
           </div>

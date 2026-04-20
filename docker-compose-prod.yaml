@@ -2,12 +2,14 @@ version: '3.8'
 
 services:
   web:
-    image: achmad/fafarasa:latest
+    image: ramdhanistars/fafarasa:latest
     restart: unless-stopped
     env_file:
-      - .env.production
+      - .env
     ports:
       - "8832:3000"
+    depends_on:
+      - db
     networks:
       - default
     healthcheck:
@@ -15,9 +17,25 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+
+  db:
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root8832
+      MARIADB_DATABASE: fafarasa
+      MARIADB_USER: fafarasa
+      MARIADB_PASSWORD: fafarasa8832
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306" # optional, hanya jika mau akses dari luar
+    networks:
+      - default
 
 networks:
   default:
     driver: bridge
+
+volumes:
+  mysql_data:
