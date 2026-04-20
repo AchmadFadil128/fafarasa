@@ -112,3 +112,38 @@ main {
   font-size: 0.875rem;
   color: var(--palette-text-secondary);
 }
+
+.air-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.18px;
+  color: var(--palette-text-primary);
+}
+
+.air-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.18px;
+  color: var(--palette-text-primary);
+}
+
+.air-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--palette-text-primary);
+}
+
+.air-table {
+  font-size: 0.875rem;
+}
+
+.air-table th {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--palette-text-secondary);
+}
+
+.air-table td {
+  font-size: 0.875rem;
+  color: var(--palette-text-primary);
+}

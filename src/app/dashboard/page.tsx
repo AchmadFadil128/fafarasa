@@ -148,7 +148,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="air-card p-4">
-          <h2 className="text-base font-semibold mb-2 text-[#222222]">Grafik Penjualan (Kue Terjual per Hari)</h2>
+          <h2 className="air-card-title mb-2">Grafik Penjualan (Kue Terjual per Hari)</h2>
           <div style={{ height: '220px' }}>
             <Bar
               data={{
@@ -177,7 +177,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="air-card p-4">
-          <h2 className="text-base font-semibold mb-2 text-[#222222]">Grafik Keuntungan (Rp per Hari)</h2>
+          <h2 className="air-card-title mb-2">Grafik Keuntungan (Rp per Hari)</h2>
           <div style={{ height: '220px' }}>
             <Line
               data={{
@@ -232,10 +232,10 @@ export default function Dashboard() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
+            <h2 className="air-section-title">
               Laporan Penjualan & Keuntungan
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Data performa bisnis terkini</p>
+            <p className="air-subtitle mt-1">Data performa bisnis terkini</p>
           </div>
         </div>
         <div className="air-pill px-3 py-1 text-sm font-medium">
@@ -246,7 +246,7 @@ export default function Dashboard() {
 
     {/* Table Content */}
     <div className="overflow-x-auto">
-      <table className="w-full">
+      <table className="w-full air-table">
         <thead>
           <tr className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
             <th className="text-left px-6 py-4 font-semibold text-gray-700">

@@ -129,10 +129,10 @@ export default function Cakes() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
+                <h2 className="air-section-title">
                   Manajemen Kue
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Tambah, edit, hapus, atau sembunyikan data kue</p>
+                <p className="air-subtitle mt-1">Tambah, edit, hapus, atau sembunyikan data kue</p>
               </div>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function Cakes() {
           <form onSubmit={handleAddOrUpdateCake} className="mb-6 bg-white/50 p-4 rounded-xl border border-white/30 backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Nama Kue</label>
+                <label htmlFor="name" className="block air-label mb-1">Nama Kue</label>
                 <input
                   id="name"
                   type="text"
@@ -156,7 +156,7 @@ export default function Cakes() {
                 />
               </div>
               <div>
-                <label htmlFor="producerId" className="block text-sm font-medium text-gray-700 mb-1">Produsen</label>
+                <label htmlFor="producerId" className="block air-label mb-1">Produsen</label>
                 <select
                   id="producerId"
                   name="producerId"
@@ -172,7 +172,7 @@ export default function Cakes() {
                 </select>
               </div>
               <div>
-                <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700 mb-1">Harga Beli</label>
+                <label htmlFor="purchasePrice" className="block air-label mb-1">Harga Beli</label>
                 <input
                   id="purchasePrice"
                   type="number"
@@ -185,7 +185,7 @@ export default function Cakes() {
                 />
               </div>
               <div>
-                <label htmlFor="sellingPrice" className="block text-sm font-medium text-gray-700 mb-1">Harga Jual</label>
+                <label htmlFor="sellingPrice" className="block air-label mb-1">Harga Jual</label>
                 <input
                   id="sellingPrice"
                   type="number"
@@ -210,9 +210,9 @@ export default function Cakes() {
             </div>
           </form>
           
-          <h3 className="font-semibold text-lg mb-4 text-gray-700">Daftar Kue</h3>
+          <h3 className="air-card-title mb-4">Daftar Kue</h3>
           <div className="overflow-x-auto rounded-xl border border-gray-200/30">
-            <table className="w-full">
+            <table className="w-full air-table">
               <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
                 <tr>
                   <th className="text-left px-6 py-4 font-semibold text-gray-700">#</th>
@@ -264,11 +264,11 @@ export default function Cakes() {
           {hiddenCakes.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg text-gray-700">Kue Tersembunyi</h3>
+                <h3 className="air-card-title">Kue Tersembunyi</h3>
                 <span className="air-pill px-3 py-1 text-sm font-medium">{hiddenCakes.length} Kue</span>
               </div>
               <div className="overflow-x-auto rounded-xl border border-gray-200/30">
-                <table className="w-full">
+                <table className="w-full air-table">
                   <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
                     <tr>
                       <th className="text-left px-6 py-4 font-semibold text-gray-700">#</th>

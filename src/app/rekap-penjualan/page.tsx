@@ -269,7 +269,7 @@ export default function ProducerSalesSummary() {
       {/* Period Info */}
       {selectedWeekOption && (
         <div className="mb-4 p-3 bg-[#f9f9f9] rounded-lg border border-[#ececec]">
-          <p className="text-[#222222] font-medium">
+          <p className="air-label">
             Periode: {selectedWeekOption.label}
           </p>
         </div>
@@ -297,7 +297,7 @@ export default function ProducerSalesSummary() {
                 {/* Producer Header */}
                 <div className="bg-[#222222] text-white px-4 py-3">
                   <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">Nama: {producer.name}</h3>
+                    <h3 className="air-card-title text-white">Nama: {producer.name}</h3>
                     <div className="text-right">
                       <p className="text-sm opacity-90">TOTAL</p>
                       <p className="text-xl font-bold">{formatCurrency(producer.total)}</p>
@@ -307,7 +307,7 @@ export default function ProducerSalesSummary() {
 
                 {/* Table */}
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full air-table">
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border border-gray-300 px-3 py-2 text-left">TGL</th>

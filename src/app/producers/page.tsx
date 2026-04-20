@@ -101,10 +101,10 @@ export default function Producers() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
+                <h2 className="air-section-title">
                   Form Manajemen Produsen
                 </h2>
-                <p className="text-sm text-[#6a6a6a] mt-1">Tambah, edit, atau sembunyikan produsen</p>
+                <p className="air-subtitle mt-1">Tambah, edit, atau sembunyikan produsen</p>
               </div>
             </div>
           </div>
@@ -140,14 +140,14 @@ export default function Producers() {
           {/* Visible Producers */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-700">Produsen Aktif</h3>
+              <h3 className="air-card-title">Produsen Aktif</h3>
               <span className="air-pill px-3 py-1 text-sm font-medium">
                 {producers.length} Produsen
               </span>
             </div>
             
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full air-table">
                 <thead>
                   <tr className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
                     <th className="text-left px-6 py-4 font-semibold text-gray-700">#</th>
@@ -207,14 +207,14 @@ export default function Producers() {
           {hiddenProducers.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-700">Produsen Tersembunyi</h3>
+                <h3 className="air-card-title">Produsen Tersembunyi</h3>
                 <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium">
                   {hiddenProducers.length} Produsen
                 </span>
               </div>
               
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full air-table">
                   <thead>
                     <tr className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
                       <th className="text-left px-6 py-4 font-semibold text-gray-700">#</th>

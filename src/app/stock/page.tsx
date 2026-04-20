@@ -43,10 +43,10 @@ export default function StockReport() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#222222] tracking-[-0.18px]">
+                <h2 className="air-section-title">
                   Rekap Stok Harian
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">Lihat ringkasan stok harian untuk tanggal yang dipilih</p>
+                <p className="air-subtitle mt-1">Lihat ringkasan stok harian untuk tanggal yang dipilih</p>
               </div>
             </div>
             <div className="air-pill px-3 py-1 text-sm font-medium">
@@ -58,7 +58,7 @@ export default function StockReport() {
         {/* Content */}
         <div className="p-6">
           <div className="flex items-center gap-2 mb-4 flex-wrap bg-white p-4 rounded-xl border border-[#ececec]">
-            <label htmlFor="date" className="font-medium text-gray-700">Tanggal:</label>
+            <label htmlFor="date" className="air-label">Tanggal:</label>
             <input
               id="date"
               type="date"
@@ -68,7 +68,7 @@ export default function StockReport() {
             />
           </div>
           <div className="overflow-x-auto rounded-xl border border-gray-200/30">
-            <table className="w-full">
+            <table className="w-full air-table">
               <thead className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 border-b border-gray-200/50">
                 <tr>
                   <th className="text-left px-6 py-4 font-semibold text-gray-700">Nama Kue</th>
