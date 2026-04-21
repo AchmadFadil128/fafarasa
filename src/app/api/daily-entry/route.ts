@@ -7,8 +7,15 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('date');
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
   let where = {};
-  if (date) {
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    where = { date: { gte: start, lte: end } };
+  } else if (date) {
     // Filter by date (YYYY-MM-DD)
     const start = new Date(date);
     const end = new Date(date);

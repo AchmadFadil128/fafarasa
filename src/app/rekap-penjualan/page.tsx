@@ -297,7 +297,9 @@ export default function ProducerSalesSummary() {
                 {/* Producer Header */}
                 <div className="bg-[#222222] text-white px-4 py-3">
                   <div className="flex justify-between items-center">
-                    <h3 className="air-card-title text-white">Nama: {producer.name}</h3>
+                    <h3 className="air-card-title text-white" style={{ color: 'rgba(255, 255, 255, 1)' }}>
+                      Nama: {producer.name}
+                    </h3>
                     <div className="text-right">
                       <p className="text-sm opacity-90">TOTAL</p>
                       <p className="text-xl font-bold">{formatCurrency(producer.total)}</p>
